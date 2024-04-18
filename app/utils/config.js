@@ -1,0 +1,1 @@
+export const api = "https://kanyangapi-production.up.railway.app/api";
