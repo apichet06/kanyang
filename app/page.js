@@ -1,4 +1,6 @@
 
+
+
 export default function Home() {
   return (
     <div className="container vh-100">
@@ -18,7 +20,7 @@ export default function Home() {
               </div>
 
               <button className="w-100 btn btn-lg btn-primary" type="submit">เข้าสู่ระบบ</button>
-              <p className="mt-5 mb-3 text-muted">©Apichet 2024</p>
+              <p className="mt-5 mb-3 text-muted">Copyright &copy; Apichet Singnakrong 2024</p>
             </form>
           </main>
         </div>
