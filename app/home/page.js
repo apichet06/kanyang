@@ -7,11 +7,9 @@ export default async function page() {
 
         return (
             <div className="container">
-                <div className='row'>
-                    <div className="card mt-5">
-                        <div className="card-body">
-                            <Datatable />
-                        </div>
+                <div className='row  '>
+                    <div className='col-md-12 mt-5'>
+                        <Datatable />
                     </div>
                 </div>
             </div>

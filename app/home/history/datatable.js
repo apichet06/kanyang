@@ -25,7 +25,6 @@ const columns = [
     { name: 'วันที่บันทึก', selector: row => format(row.w_datetime, 'yyyy/MM/dd HH:mm'), width: '175px' },
 ];
 
-
 export default function Datatable() {
     const [data, setData] = useState([]);
     const [pending, setPending] = useState(true);
@@ -47,7 +46,6 @@ export default function Datatable() {
     useEffect(() => {
         showData();
     }, [showData])
-
 
     return (
         <DataTable
