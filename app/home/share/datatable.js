@@ -5,13 +5,7 @@ import DataTable from 'react-data-table-component';
 import { format } from 'date-fns';
 import axios from 'axios';
 import { api } from "../../utils/config";
-
-function formatPrice(price) {
-    return Number(price).toLocaleString('th-TH', {
-        style: 'currency',
-        currency: 'THB'
-    });
-}
+import formatPrice from '@/app/utils/allfunctions';
 
 const columns = [
     { name: 'ปี', selector: row => row.year_w_datetime },

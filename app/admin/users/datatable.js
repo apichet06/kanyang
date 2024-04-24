@@ -9,11 +9,22 @@ export default function datatable() {
 
 
     const columns = [
+        { name: 'ลำดับ', selector: row => row.autoID, width: '65px' },
         { name: 'เลขหุ้น', selector: row => row.u_number, width: '135px' },
         { name: 'ชื่อ-สกุล', selector: row => row.username, width: '175px' },
-        { name: 'ที่อยู่', selector: row => row.u_address, width: '500px' },
+        { name: 'ที่อยู่', selector: row => row.u_address, width: '470px' },
         { name: 'จำนวนหุ้น', selector: row => Number(row.u_share).toLocaleString() },
-
+        { name: 'สถานะ', selector: row => row.u_status, width: '100px' },
+        {
+            name: "จัดการ",
+            cell: (row) => (
+                <>
+                    <button onClick={() => { handleEdit(row.id); }} className="btn btn-warning btn-sm">แก้ไข</button>
+                    &nbsp;
+                    <button onClick={() => handleDelete(row.id)} className="btn btn-danger btn-sm">ลบ</button>
+                </>
+            ), center: true
+        },
     ];
 
     const [data, setData] = useState([]);
@@ -24,8 +35,10 @@ export default function datatable() {
         const response = await axios.get(api + "/users");
 
         if (response.status === 200) {
-            console.log(response.data.data);
-            setData(response.data.data);
+            const newData = await response.data.data.map((item, index) => ({
+                ...item, autoID: index + 1
+            }))
+            setData(newData);
             setPending(false);
         } else {
             throw new Error("ไม่พบข้อมูล");

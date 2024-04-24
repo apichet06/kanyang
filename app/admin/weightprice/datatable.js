@@ -1,22 +1,25 @@
 'use client'
 import { useEffect, useCallback, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import { format } from 'date-fns';
 import axios from 'axios';
 import { api } from "../../utils/config";
-import formatPrice from '@/app/utils/allfunctions';
-
+import { formatPrice, formatDate, formatDateTime } from '@/app/utils/allfunctions';
 
 export default function datatable() {
 
 
     const columns = [
-        { name: 'ID', selector: row => row.autoID, width: '80px' },
+        { name: 'ลำดับ', selector: row => row.autoID, width: '62px' },
+        { name: 'ID', selector: row => row.w_number, width: '120px' },
+        { name: 'เลขหุ้น', selector: row => row.u_number, width: '110px' },
+        { name: 'สามชิก', selector: row => row.username, width: '175px' },
         { name: 'รอบขายยางพารา', selector: row => row.r_around, width: '120px' },
-        { name: 'เดือน', selector: row => format(row.r_rubber_date, 'yyyy/MM'), width: '130px' },
-        { name: 'ราคาขายยางพารา', selector: row => formatPrice(row.r_rubber_price), width: '130px' },
-        { name: 'ผู้บันทึก', selector: row => row.username, width: '190px' },
-        { name: 'วันที่บันทึก', selector: row => format(row.r_rubber_date, 'yyyy/MM/dd'), width: '115px' },
+        { name: 'ราคาขายยางพารา', selector: row => formatPrice(row.r_rubber_price) },
+        { name: 'น้ำหนัก', selector: row => Number(row.w_weigth).toFixed(2).toLocaleString() },
+        { name: 'จำนวนเงิน', selector: row => formatPrice(row.w_price) },
+        { name: 'วันขาย', selector: row => formatDate(row.r_rubber_date), width: '110px' },
+        { name: 'ผู้บันทึก', selector: row => row.uadmin, width: '180px' },
+        { name: 'วันที่บันทึก', selector: row => formatDateTime(row.w_datetime), width: '150px' },
         {
             name: "จัดการ",
             cell: (row) => (
@@ -25,7 +28,7 @@ export default function datatable() {
                     &nbsp;
                     <button onClick={() => handleDelete(row.id)} className="btn btn-danger btn-sm">ลบ</button>
                 </>
-            ), center: true
+            ), center: true, width: '140px'
         },
     ];
 
@@ -34,13 +37,13 @@ export default function datatable() {
 
     const showData = useCallback(async () => {
 
-        const response = await axios.get(api + "/rubberprice");
+        const response = await axios.get(api + "/weightprice");
 
         if (response.status === 200) {
-            const NewData = await response.data.data.map((item, index) => ({
+            const newData = await response.data.data.map((item, index) => ({
                 ...item, autoID: index + 1
             }))
-            setData(NewData);
+            setData(newData);
             setPending(false);
         } else {
             throw new Error("ไม่พบข้อมูล");
@@ -54,7 +57,7 @@ export default function datatable() {
 
     return (
         <DataTable
-            title="ข้อมูลราคายางพารา"
+            title="น้ำหนักยางพารา/ราคาขาย"
             columns={columns}
             data={data}
             pagination

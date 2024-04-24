@@ -4,19 +4,15 @@ import DataTable from 'react-data-table-component';
 import { format } from 'date-fns';
 import axios from 'axios';
 import { api } from "../../utils/config";
-import formatPrice from '@/app/utils/allfunctions';
-
 
 export default function datatable() {
 
 
     const columns = [
-        { name: 'ID', selector: row => row.autoID, width: '80px' },
-        { name: 'รอบขายยางพารา', selector: row => row.r_around, width: '120px' },
-        { name: 'เดือน', selector: row => format(row.r_rubber_date, 'yyyy/MM'), width: '130px' },
-        { name: 'ราคาขายยางพารา', selector: row => formatPrice(row.r_rubber_price), width: '130px' },
-        { name: 'ผู้บันทึก', selector: row => row.username, width: '190px' },
-        { name: 'วันที่บันทึก', selector: row => format(row.r_rubber_date, 'yyyy/MM/dd'), width: '115px' },
+        { name: 'ลำดับ', selector: row => row.autoID, width: '135px' },
+        { name: 'ปี', selector: row => row.s_year, width: '105px' },
+        { name: 'เปอร์เซ็นที่ปันผลหุ้น', selector: row => row.s_percent + '%', width: '140px' },
+        { name: 'ปันผลเปอร์เซ็นหัวตัน', selector: row => Number(row.s_money).toLocaleString() + '%' },
         {
             name: "จัดการ",
             cell: (row) => (
@@ -34,13 +30,13 @@ export default function datatable() {
 
     const showData = useCallback(async () => {
 
-        const response = await axios.get(api + "/rubberprice");
+        const response = await axios.get(api + "/sharepercent");
 
         if (response.status === 200) {
-            const NewData = await response.data.data.map((item, index) => ({
+            const newData = await response.data.data.map((item, index) => ({
                 ...item, autoID: index + 1
             }))
-            setData(NewData);
+            setData(newData);
             setPending(false);
         } else {
             throw new Error("ไม่พบข้อมูล");
@@ -54,7 +50,7 @@ export default function datatable() {
 
     return (
         <DataTable
-            title="ข้อมูลราคายางพารา"
+            title="ข้อมูลเปอร์เซ็นปันผลหุ้น/หัวตันประจำปี"
             columns={columns}
             data={data}
             pagination
