@@ -46,6 +46,7 @@ export default function Modal(props) {
     }, [api])
 
 
+
     const handleDistrictChanges = (e) => {
         const selectprovices = e.target.value;
         handleDistrict(selectprovices)
@@ -61,9 +62,45 @@ export default function Modal(props) {
 
 
 
+
+    const fetchDistrictData = useCallback(async () => {
+
+        try {
+
+            const districtResponse = await axios.get(`${api}/district/2`);
+            if (districtResponse.status === 200) {
+                const districtData = districtResponse.data.data;
+                setDistricts(districtData);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+    }, [api]);
+
+    const fetchSubdistrictData = useCallback(async () => {
+        try {
+            const subdistrictResponse = await axios.get(`${api}/subdistrict/12`);
+            if (subdistrictResponse.status === 200) {
+                const subdistrictData = subdistrictResponse.data.data;
+                setSubdistricts(subdistrictData);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+    }, [api]);
+
+
+
     useEffect(() => {
         handleprovinctChange()
-    }, [handleprovinctChange]);
+        if (editID) {
+            fetchDistrictData();
+            fetchSubdistrictData();
+        }
+
+    }, [handleprovinctChange, editID, fetchDistrictData, fetchSubdistrictData]);
 
 
     return (
@@ -79,7 +116,7 @@ export default function Modal(props) {
                             <form className='row g-3' onSubmit={handleSubmit}>
                                 <div className='col-md-2'>
                                     <label className="col-form-label">คำนำหน้า</label>
-                                    <select className="form-select" name="u_title" onChange={handleInputChange} required>
+                                    <select className="form-select" name="u_title" onChange={handleInputChange} value={userData.u_title} required>
                                         <option value="">คำนำหน้า</option>
                                         <option value="นาย">นาย</option>
                                         <option value="นาง">นาง</option>
@@ -96,11 +133,11 @@ export default function Modal(props) {
                                 </div>
                                 <div className="col-md-12">
                                     <label htmlFor="message-text" className="col-form-label">ที่อยู่</label>
-                                    <textarea className="form-control" name="u_address" placeholder='เช่น เลขที่ 1 หมู่ 1 บ้านหนองป่าอ้อย' onChange={handleInputChange} />
+                                    <textarea className="form-control" name="u_address" placeholder='เช่น เลขที่ 1 หมู่ 1 บ้านหนองป่าอ้อย' value={userData.u_address} onChange={handleInputChange} />
                                 </div>
                                 <div className='col-md-4'>
                                     <label className="col-form-label">จังหวัด</label>
-                                    <select className="form-select" name='provinces_id' onChange={handleDistrictChanges}>
+                                    <select className="form-select" name='provinces_id' value={userData.provinces_id} onChange={handleDistrictChanges}>
                                         <option value="">เลือกจังหวัด</option>
                                         {provinces.map(province => (
                                             <option key={province.id} value={province.id}>{province.name_in_thai}</option>
@@ -127,11 +164,11 @@ export default function Modal(props) {
                                 </div>
                                 <div className="col-md-4">
                                     <label className="col-form-label">จำนวนหุ้น</label>
-                                    <input type="number" className="form-control" name="u_share" placeholder='เช่น 1000' onChange={handleInputChange} />
+                                    <input type="number" className="form-control" name="u_share" value={userData.u_share} placeholder='เช่น 1000' onChange={handleInputChange} />
                                 </div>
                                 <div className="mb-3 col-md-4">
                                     <label className="col-form-label">สถานะ</label>
-                                    <select className="form-select" name='u_status' onChange={handleInputChange} >
+                                    <select className="form-select" name='u_status' value={userData.u_status} onChange={handleInputChange} >
                                         <option value="">สถานะ</option>
                                         <option value="Admin">ผู้ดูแลระบบ</option>
                                         <option value="user">ผู้ใช้งานทั้วไป</option>
