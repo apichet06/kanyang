@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useCallback, useState } from 'react';
 import DataTable from 'react-data-table-component';
-
+import Modal from './modal';
 import axios from 'axios';
 import { api } from "../../utils/config";
 import Swal from 'sweetalert2';
@@ -11,6 +11,26 @@ export default function datatable() {
 
     const [data, setData] = useState([]);
     const [pending, setPending] = useState(true);
+    const [editID, setEditID] = useState('');
+
+    const [userData, setUserData] = useState({
+        u_title: '',
+        u_firstname: '',
+        u_lastname: '',
+        u_address: '',
+        provinces_id: '',
+        districts_id: '',
+        subdistricts_id: '',
+        u_share: '',
+        u_status: ''
+    });
+
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setUserData({ ...userData, [name]: value });
+    };
+
 
     const columns = [
         { name: 'ลำดับ', selector: row => row.autoID, width: '65px' },
@@ -23,7 +43,7 @@ export default function datatable() {
             name: "จัดการ",
             cell: (row) => (
                 <>
-                    <button onClick={() => { handleEdit(row.u_number); }} className="btn btn-warning btn-sm">แก้ไข</button>
+                    <button onClick={() => { handleEdit(row.u_number); }} className="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">แก้ไข</button>
                     &nbsp;
                     <button onClick={() => handleDelete(row.u_number)} className="btn btn-danger btn-sm">ลบ</button>
                 </>
@@ -47,15 +67,28 @@ export default function datatable() {
 
     }, [api])
 
-
     const handleEdit = async (id) => {
         try {
-            console.log(id);
+
+            const Data = await data.find(data => data.u_number === id);
+            if (Data) {
+                setUserData({
+                    u_title: Data.u_title,
+                    u_firstname: Data.u_firstname,
+                    u_lastname: Data.u_lastname,
+                    u_address: Data.u_address,
+                    provinces_id: Data.provinces_id,
+                    districts_id: Data.districts_id,
+                    subdistricts_id: Data.subdistricts_id,
+                    u_share: Data.u_share,
+                    u_status: Data.u_status
+                });
+            }
+            setEditID(id)
         } catch (error) {
             console.log(error);
         }
     }
-
 
     const handleDelete = async (id) => {
         try {
@@ -68,13 +101,14 @@ export default function datatable() {
                 confirmButtonText: 'ลบ!'
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    console.log(id);
+
                     try {
                         const response = await axios.delete(`${api}/users/${id}`, {
                             headers: { 'Content-Type': 'application/json' },
                         });
 
                         if (response.status === 200) {
+                            console.log(response.data);
                             await showSuccessAlert(response.data.message)
                             // รีเฟรชข้อมูลหลังจากลบ
                             await fetchData();
@@ -91,18 +125,53 @@ export default function datatable() {
     }
 
 
+    const handleSubmit = useCallback(async (e) => {
+        e.preventDefault();
+        try {
+            const apiUrl = editID ? `${api}/users/${editID}` : `${api}/users`
+            const response = await (editID ? axios.put(apiUrl, userData) : axios.post(apiUrl, userData));
+
+            if (response.status === 200) {
+
+                showSuccessAlert(response.data.messages);
+                fetchData();
+                setUserData({
+                    u_title: '',
+                    u_firstname: '',
+                    u_lastname: '',
+                    u_address: '',
+                    provinces_id: '',
+                    districts_id: '',
+                    subdistricts_id: '',
+                    u_share: '',
+                    u_status: ''
+                });
+
+            } else {
+                showErrorAlert(response.data.messages);
+            }
+        } catch (error) {
+            console.log(error.message);
+            showErrorAlert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+        }
+
+    }, [api, fetchData, userData])
+
 
     useEffect(() => {
         fetchData();
     }, [fetchData])
 
     return (
-        <DataTable
-            title="ข้อมูลสมาชิก"
-            columns={columns}
-            data={data}
-            pagination
-            progressPending={pending}
-        />
+        <>
+            <DataTable
+                title="ข้อมูลสมาชิก"
+                columns={columns}
+                data={data}
+                pagination
+                progressPending={pending} />
+            <Modal editID={editID} handleInputChange={handleInputChange} handleSubmit={handleSubmit} userData={userData} />
+        </>
+
     )
 }

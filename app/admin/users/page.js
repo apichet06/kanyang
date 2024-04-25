@@ -1,5 +1,5 @@
 import React from 'react'
-import Modal from './modal'
+
 import Datatable from './datatable'
 export default function Users() {
     return (
@@ -25,7 +25,7 @@ export default function Users() {
                     </div>
                 </div>
             </div>
-            <Modal />
+
         </>
 
 
