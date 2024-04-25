@@ -5,7 +5,7 @@ import DataTable from 'react-data-table-component';
 import { format } from 'date-fns';
 import axios from 'axios';
 import { api } from "../../utils/config";
-import formatPrice from '@/app/utils/allfunctions';
+import { formatPrice, formatDateTime } from '@/app/utils/allfunctions';
 
 
 const columns = [
@@ -17,7 +17,7 @@ const columns = [
     { name: 'จำนวนเงิน', selector: row => formatPrice(row.w_price) },
     { name: 'สมาชิก', selector: row => row.username, width: '175px' },
     { name: 'ผู้บันทึก', selector: row => row.uadmin, width: '175px' },
-    { name: 'วันที่บันทึก', selector: row => format(row.w_datetime, 'yyyy/MM/dd HH:mm'), width: '175px' },
+    { name: 'วันที่บันทึก', selector: row => formatDateTime(row.w_datetime), width: '175px' },
 ];
 
 export default function Datatable() {

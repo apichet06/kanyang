@@ -1,12 +1,16 @@
 'use client'
 import { useEffect, useCallback, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import { format } from 'date-fns';
+
 import axios from 'axios';
 import { api } from "../../utils/config";
+import Swal from 'sweetalert2';
+import { showErrorAlert, showSuccessAlert } from '@/app/utils/alertUtils';
 
 export default function datatable() {
 
+    const [data, setData] = useState([]);
+    const [pending, setPending] = useState(true);
 
     const columns = [
         { name: 'ลำดับ', selector: row => row.autoID, width: '65px' },
@@ -19,18 +23,15 @@ export default function datatable() {
             name: "จัดการ",
             cell: (row) => (
                 <>
-                    <button onClick={() => { handleEdit(row.id); }} className="btn btn-warning btn-sm">แก้ไข</button>
+                    <button onClick={() => { handleEdit(row.u_number); }} className="btn btn-warning btn-sm">แก้ไข</button>
                     &nbsp;
-                    <button onClick={() => handleDelete(row.id)} className="btn btn-danger btn-sm">ลบ</button>
+                    <button onClick={() => handleDelete(row.u_number)} className="btn btn-danger btn-sm">ลบ</button>
                 </>
             ), center: true
         },
     ];
 
-    const [data, setData] = useState([]);
-    const [pending, setPending] = useState(true);
-
-    const showData = useCallback(async () => {
+    const fetchData = useCallback(async () => {
 
         const response = await axios.get(api + "/users");
 
@@ -46,9 +47,54 @@ export default function datatable() {
 
     }, [api])
 
+
+    const handleEdit = async (id) => {
+        try {
+            console.log(id);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+    const handleDelete = async (id) => {
+        try {
+            Swal.fire({
+                title: "ยืนยันการลบ",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'ลบ!'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    console.log(id);
+                    try {
+                        const response = await axios.delete(`${api}/users/${id}`, {
+                            headers: { 'Content-Type': 'application/json' },
+                        });
+
+                        if (response.status === 200) {
+                            await showSuccessAlert(response.data.message)
+                            // รีเฟรชข้อมูลหลังจากลบ
+                            await fetchData();
+                        }
+                    } catch (error) {
+                        console.error("เกิดข้อผิดพลาดในการลบข้อมูล:", error);
+                        showErrorAlert(error.response.data.message)
+                    }
+                }
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+
     useEffect(() => {
-        showData();
-    }, [showData])
+        fetchData();
+    }, [fetchData])
 
     return (
         <DataTable
