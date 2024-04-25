@@ -5,7 +5,7 @@ import DataTable from 'react-data-table-component';
 import { format } from 'date-fns';
 import axios from 'axios';
 import { api } from "../utils/config";
-import { formatPrice, formatDate } from '@/app/utils/allfunctions';
+import { formatPrice, formatDate } from '../utils/allfunctions';
 
 const columns = [
     { name: 'ID', selector: row => row.w_number },

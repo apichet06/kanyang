@@ -3,7 +3,7 @@ import { useEffect, useCallback, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import axios from 'axios';
 import { api } from "../../utils/config";
-import { formatPrice, formatDate, formatDateTime } from '@/app/utils/allfunctions';
+import { formatPrice, formatDate, formatDateTime } from '../../utils/allfunctions';
 
 export default function datatable() {
 

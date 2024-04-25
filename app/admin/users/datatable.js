@@ -5,7 +5,7 @@ import DataTable from 'react-data-table-component';
 import axios from 'axios';
 import { api } from "../../utils/config";
 import Swal from 'sweetalert2';
-import { showErrorAlert, showSuccessAlert } from '@/app/utils/alertUtils';
+import { showErrorAlert, showSuccessAlert } from '../../utils/alertUtils';
 
 export default function datatable() {
 

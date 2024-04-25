@@ -5,7 +5,7 @@ import DataTable from 'react-data-table-component';
 import { format } from 'date-fns';
 import axios from 'axios';
 import { api } from "../../utils/config";
-import { formatPrice, formatDateTime } from '@/app/utils/allfunctions';
+import { formatPrice, formatDateTime } from '../../utils/allfunctions';
 
 
 const columns = [

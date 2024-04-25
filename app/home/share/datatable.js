@@ -5,7 +5,7 @@ import DataTable from 'react-data-table-component';
 import { format } from 'date-fns';
 import axios from 'axios';
 import { api } from "../../utils/config";
-import { formatPrice } from '@/app/utils/allfunctions';
+import { formatPrice } from '../../utils/allfunctions';
 
 const columns = [
     { name: 'ปี', selector: row => row.year_w_datetime },

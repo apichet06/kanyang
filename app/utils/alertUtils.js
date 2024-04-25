@@ -2,7 +2,7 @@
 import Swal from 'sweetalert2';
 
 export function showSuccessAlert(message) {
-    Swal.fire({
+    return Swal.fire({
         position: 'center',
         icon: 'success',
         title: message,
@@ -12,7 +12,7 @@ export function showSuccessAlert(message) {
 }
 
 export function showErrorAlert(message) {
-    Swal.fire({
+    return Swal.fire({
         position: 'center',
         icon: 'error',
         title: message,
@@ -22,7 +22,7 @@ export function showErrorAlert(message) {
 }
 
 export function showDeleteAlert(message) {
-    Swal.fire({
+    return Swal.fire({
         position: 'center',
         icon: 'success',
         title: message,
