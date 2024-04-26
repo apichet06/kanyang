@@ -4,8 +4,9 @@ import "./globals.css";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
+
 import InstallBootstrap from "./utils/installBootstrap";
-import Script from "next/script";
+
 
 const prompt = Prompt({ subsets: ['latin'], weight: '400' })
 
@@ -18,7 +19,7 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      {/* <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" /> */}
+
       <body className={prompt.className}>
         {children}
         <InstallBootstrap />

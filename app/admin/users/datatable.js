@@ -7,11 +7,13 @@ import { api } from "../../utils/config";
 import Swal from 'sweetalert2';
 import { showErrorAlert, showSuccessAlert } from '../../utils/alertUtils';
 
+
 export default function datatable() {
 
     const [data, setData] = useState([]);
     const [pending, setPending] = useState(true);
     const [editID, setEditID] = useState('');
+    const [showModal, setshowModal] = useState(false)
 
     const [userData, setUserData] = useState({
         u_title: '',
@@ -36,18 +38,18 @@ export default function datatable() {
         { name: 'ลำดับ', selector: row => row.autoID, width: '65px' },
         { name: 'เลขหุ้น', selector: row => row.u_number, width: '135px' },
         { name: 'ชื่อ-สกุล', selector: row => row.username, width: '175px' },
-        { name: 'ที่อยู่', selector: row => row.u_address, width: '470px' },
+        { name: 'ที่อยู่', selector: row => row.u_addressfull, width: '470px' },
         { name: 'จำนวนหุ้น', selector: row => Number(row.u_share).toLocaleString() },
         { name: 'สถานะ', selector: row => row.u_status, width: '100px' },
         {
             name: "จัดการ",
             cell: (row) => (
                 <>
-                    <button onClick={() => { handleEdit(row.u_number); }} className="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">แก้ไข</button>
+                    <button onClick={() => { handleEdit(row.u_number) }} className="btn btn-warning btn-sm">แก้ไข</button>
                     &nbsp;
                     <button onClick={() => handleDelete(row.u_number)} className="btn btn-danger btn-sm">ลบ</button>
                 </>
-            ), center: true
+            ), center: true, width: '130px'
         },
     ];
 
@@ -69,7 +71,8 @@ export default function datatable() {
 
     const handleEdit = async (id) => {
         try {
-
+            setEditID(id)
+            setshowModal(true)
             const Data = await data.find(data => data.u_number === id);
             if (Data) {
                 setUserData({
@@ -84,7 +87,7 @@ export default function datatable() {
                     u_status: Data.u_status
                 });
             }
-            setEditID(id)
+
         } catch (error) {
             console.log(error);
         }
@@ -128,6 +131,7 @@ export default function datatable() {
     const handleSubmit = useCallback(async (e) => {
         e.preventDefault();
         try {
+
             const apiUrl = editID ? `${api}/users/${editID}` : `${api}/users`
             const response = await (editID ? axios.put(apiUrl, userData) : axios.post(apiUrl, userData));
 
@@ -146,13 +150,12 @@ export default function datatable() {
                     u_share: '',
                     u_status: ''
                 });
+                setshowModal(false)
 
-            } else {
-                showErrorAlert(response.data.messages);
             }
         } catch (error) {
             console.log(error.message);
-            showErrorAlert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+            showErrorAlert(error.message);
         }
 
     }, [api, fetchData, userData])
@@ -162,10 +165,28 @@ export default function datatable() {
         fetchData();
     }, [fetchData])
 
+
+    const AddForm = (() => {
+        setEditID('')
+        setshowModal(true)
+        setUserData({
+            u_title: '',
+            u_firstname: '',
+            u_lastname: '',
+            u_address: '',
+            provinces_id: '',
+            districts_id: '',
+            subdistricts_id: '',
+            u_share: '',
+            u_status: ''
+        });
+    })
+
+
     return (
         <>
             <div className='col-md-12 text-end mb-3'>
-                <button type="button" className="btn btn-primary " data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => { setEditID(''); }}>
+                <button type="button" className="btn btn-primary " onClick={() => { AddForm(); }}>
                     เพิ่ม
                 </button>
                 <hr />
@@ -184,7 +205,8 @@ export default function datatable() {
             </div>
 
 
-            <Modal editID={editID} handleInputChange={handleInputChange} handleSubmit={handleSubmit} userData={userData} />
+            <Modal editID={editID} handleInputChange={handleInputChange} handleSubmit={handleSubmit}
+                userData={userData} showModal={showModal} hideModal={() => setshowModal(false)} />
         </>
 
     )

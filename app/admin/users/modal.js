@@ -1,22 +1,30 @@
 import { useCallback, useEffect, useState } from 'react'
 import { api } from '../../utils/config';
 import axios from 'axios';
+import Select from 'react-select';
+
 
 export default function Modal(props) {
-    const { editID, handleInputChange, handleSubmit, userData } = props
+    const { editID, handleInputChange, handleSubmit, userData, showModal, hideModal } = props
     const [provinces, setProvinces] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [subdistricts, setSubdistricts] = useState([]);
-
-
 
 
     const handleprovinctChange = useCallback(async () => {
         try {
             const response = await axios.get(api + '/provincesAll')
             if (response.status === 200) {
-                setProvinces(response.data.data)
+
+                const province = response.data.data.map(province => ({
+                    value: province.id,
+                    label: province.name_in_thai
+                }
+                ))
+
+                setProvinces(province)
             }
+
         } catch (error) {
             console.log(error);
         }
@@ -35,6 +43,7 @@ export default function Modal(props) {
     }, [api])
 
     const handleSubDistrict = useCallback(async (id) => {
+
         try {
             const response = await axios.get(api + '/subdistrict/' + id)
             if (response.status === 200) {
@@ -48,10 +57,11 @@ export default function Modal(props) {
 
 
     const handleDistrictChanges = (e) => {
-        const selectprovices = e.target.value;
+
+        const selectprovices = e.value;
         handleDistrict(selectprovices)
         handleInputChange({ target: { name: 'provinces_id', value: selectprovices } });
-        handleSubDistrict(0)
+        handleSubDistrict(3809)
     }
 
     const handleSubDistrictChanges = (e) => {
@@ -67,7 +77,7 @@ export default function Modal(props) {
 
         try {
 
-            const districtResponse = await axios.get(`${api}/district/2`);
+            const districtResponse = await axios.get(`${api}/district/${userData.provinces_id}`);
             if (districtResponse.status === 200) {
                 const districtData = districtResponse.data.data;
                 setDistricts(districtData);
@@ -76,11 +86,11 @@ export default function Modal(props) {
             console.log(error);
         }
 
-    }, [api]);
+    }, [api, userData.provinces_id]);
 
     const fetchSubdistrictData = useCallback(async () => {
         try {
-            const subdistrictResponse = await axios.get(`${api}/subdistrict/12`);
+            const subdistrictResponse = await axios.get(`${api}/subdistrict/${userData.districts_id}`);
             if (subdistrictResponse.status === 200) {
                 const subdistrictData = subdistrictResponse.data.data;
                 setSubdistricts(subdistrictData);
@@ -89,7 +99,7 @@ export default function Modal(props) {
             console.log(error);
         }
 
-    }, [api]);
+    }, [api, userData.districts_id]);
 
 
 
@@ -103,14 +113,16 @@ export default function Modal(props) {
     }, [handleprovinctChange, editID, fetchDistrictData, fetchSubdistrictData]);
 
 
+
     return (
         <>
-            <div className="modal fade" id="exampleModal" data-bs-backdrop="static" tabIndex={-1} data-bs-keyboard="false" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+
+            <div className="modal show fade" data-bs-backdrop="static" tabIndex={-1} style={{ display: showModal ? 'block' : 'none', backgroundColor: showModal && 'rgba(0,0,0,0.7)' }}>
                 <div className="modal-dialog modal-dialog-centered modal-lg">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h1 className="modal-title fs-5" id="staticBackdropLabel">{editID ? "แก้ไขข้อมูลสมาชิก" : "เพิ่มข้อมูลสมาชิก"}</h1>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                            <button type="button" className="btn-close" onClick={hideModal} />
                         </div>
                         <div className="modal-body">
                             <form className='row g-3' onSubmit={handleSubmit}>
@@ -124,6 +136,7 @@ export default function Modal(props) {
                                     </select>
                                 </div>
                                 <div className="col-md-5">
+
                                     <label className="col-form-label">ชื่อ</label>
                                     <input type="text" className="form-control" name="u_firstname" value={userData.u_firstname} onChange={handleInputChange} required />
                                 </div>
@@ -137,16 +150,16 @@ export default function Modal(props) {
                                 </div>
                                 <div className='col-md-4'>
                                     <label className="col-form-label">จังหวัด</label>
-                                    <select className="form-select" name='provinces_id' value={userData.provinces_id} onChange={handleDistrictChanges}>
-                                        <option value="">เลือกจังหวัด</option>
-                                        {provinces.map(province => (
-                                            <option key={province.id} value={province.id}>{province.name_in_thai}</option>
-                                        ))}
-                                    </select>
+                                    <Select
+                                        value={provinces.find((option) => option.value === userData.provinces_id)}
+                                        onChange={handleDistrictChanges}
+                                        options={provinces}
+                                        required
+                                    />
                                 </div>
                                 <div className='col-md-4'>
                                     <label className="col-form-label">อำเภอ</label>
-                                    <select className="form-select" name='districts_id' onChange={handleSubDistrictChanges} >
+                                    <select className="form-select" name='districts_id' value={userData.districts_id} onChange={handleSubDistrictChanges} >
                                         <option value=''>เลือกอำเภอ</option>
                                         {districts.map(districts => (
                                             <option key={districts.id} value={districts.id}>{districts.name_in_thai}</option>
@@ -155,8 +168,8 @@ export default function Modal(props) {
                                 </div>
                                 <div className='col-md-4'>
                                     <label className="col-form-label">ตำบล</label>
-                                    <select className="form-select" name='subdistricts_id' onChange={handleInputChange} >
-                                        <option value="">เลือกตำบล</option>
+                                    <select className="form-select" name='subdistricts_id' value={userData.subdistricts_id} onChange={handleInputChange} >
+                                        <option value=''>เลือกตำบล</option>
                                         {subdistricts.map(subdistricts => (
                                             <option key={subdistricts.id} value={subdistricts.id}>{subdistricts.name_in_thai}</option>
                                         ))}
@@ -170,13 +183,13 @@ export default function Modal(props) {
                                     <label className="col-form-label">สถานะ</label>
                                     <select className="form-select" name='u_status' value={userData.u_status} onChange={handleInputChange} >
                                         <option value="">สถานะ</option>
-                                        <option value="Admin">ผู้ดูแลระบบ</option>
+                                        <option value="admin">ผู้ดูแลระบบ</option>
                                         <option value="user">ผู้ใช้งานทั้วไป</option>
                                     </select>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="submit" className="btn btn-primary">{editID ? "แก้ไข" : "บันทึก"}</button>
-                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                                    <button type="submit" className="btn btn-primary" >{editID ? "แก้ไข" : "บันทึก"}</button>
+                                    <button type="button" className="btn btn-secondary" onClick={hideModal}>ยกเลิก</button>
                                 </div>
                             </form>
 
@@ -185,6 +198,7 @@ export default function Modal(props) {
                     </div>
                 </div>
             </div>
+
         </>
     )
 }
