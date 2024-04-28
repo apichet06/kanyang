@@ -4,7 +4,7 @@ import DataTable from 'react-data-table-component';
 import { format } from 'date-fns';
 import axios from 'axios';
 import { api } from "../../utils/config";
-import { formatPrice } from '../../utils/allfunctions';
+import { formatDate, formatPrice } from '../../utils/allfunctions';
 import Swal from 'sweetalert2';
 import { showSuccessAlert, showErrorAlert } from '../../utils/alertUtils';
 
@@ -12,7 +12,7 @@ export default function datatable() {
 
     const [r_rubber_price, setRrubberPrice] = useState('')
     const [r_rubber_date, setRrubberDate] = useState('')
-
+    const [editID, setEditID] = useState('');
 
     const columns = [
         { name: 'ID', selector: row => row.autoID, width: '80px' },
@@ -20,7 +20,7 @@ export default function datatable() {
         { name: 'เดือน', selector: row => format(row.r_rubber_date, 'yyyy/MM'), width: '130px' },
         { name: 'ราคาขายยางพารา', selector: row => formatPrice(row.r_rubber_price), width: '130px' },
         { name: 'ผู้บันทึก', selector: row => row.username, width: '190px' },
-        { name: 'วันที่บันทึก', selector: row => format(row.r_rubber_date, 'yyyy/MM/dd'), width: '115px' },
+        { name: 'วันที่บันทึก', selector: row => formatDate(row.r_rubber_date), width: '115px' },
         {
             name: "จัดการ",
             cell: (row) => (
@@ -36,7 +36,7 @@ export default function datatable() {
     const [data, setData] = useState([]);
     const [pending, setPending] = useState(true);
 
-    const showData = useCallback(async () => {
+    const fetchData = useCallback(async () => {
 
         try {
             const response = await axios.get(api + "/rubberprice");
@@ -56,7 +56,6 @@ export default function datatable() {
 
     const handleDelete = async (id) => {
 
-        console.log(id);
 
         try {
             Swal.fire({
@@ -91,52 +90,85 @@ export default function datatable() {
         }
     }
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const Data = {
-            r_rubber_price: r_rubber_price,
-            r_rubber_date: r_rubber_date
+        try {
+
+            const Data = {
+                r_rubber_price: r_rubber_price,
+                r_rubber_date: r_rubber_date,
+                u_number: 'U10000001'
+            }
+
+            const apiUrl = editID ? `${api}/rubberprice/${editID}` : `${api}/rubberprice`
+            const response = await (editID ? axios.put(apiUrl, Data) : axios.post(apiUrl, Data));
+
+            if (response.status === 200) {
+
+                showSuccessAlert(response.data.message);
+                fetchData();
+                handleReset()
+
+            }
+        } catch (error) {
+            console.log(error.message);
+            showErrorAlert(error.message);
+        }
+
+    }
+
+
+    const handleEdit = async (r_number) => {
+
+        setEditID(r_number)
+        const Data = await data.find(data => data.r_number === r_number);
+
+        if (Data) {
+            setRrubberPrice(Data.r_rubber_price)
+            setRrubberDate(format(Data.r_rubber_date, 'yyyy-MM-dd'));
         }
     }
 
 
-
-
-
-
-
+    const handleReset = async () => {
+        setEditID('')
+        setRrubberDate('')
+        setRrubberPrice('')
+    }
 
 
 
     useEffect(() => {
-        showData();
-    }, [showData])
+        fetchData();
+    }, [fetchData])
 
     return (
         <>
 
             <div className='col-md-9 text-end mb-3'>
-                <div>
+                <form >
                     <div className="mb-3 row">
                         <label className="col-sm-2 col-form-label">ราคาประมูลยางพารา</label>
                         <div className="col-sm-6">
-                            <input type="text" className="form-control" name="r_rubber_price" placeholder='ราคาประมูลยางพารา' onChange={(e) => setRrubberPrice(e.target.value)} />
+                            <input type="text" className="form-control" value={r_rubber_price} name="r_rubber_price" placeholder='ราคาประมูลยางพารา' onChange={(e) => setRrubberPrice(e.target.value)} />
                         </div>
                     </div>
                     <div className="mb-3 row">
                         <label className="col-sm-2 col-form-label">วันที่ขาย</label>
                         <div className="col-sm-6">
-                            <input type="date" className="form-control" name="r_rubber_date" onChange={(e) => setRrubberDate(e.target.value)} />
+                            <input type="date" className="form-control" value={r_rubber_date} name="r_rubber_date" onChange={(e) => setRrubberDate(e.target.value)} />
                         </div>
                     </div>
                     <div className="mb-3 row">
                         <label className="col-sm-2 col-form-label"> </label>
                         <div className="col-sm-6 text-center">
-                            <button type="submit" className='btn   btn-primary'>เพิ่ม</button>
+                            <button type="submit" className='btn btn-primary' onClick={(e) => handleSubmit(e)}>{editID ? 'แก้ไข' : 'เพิ่ม'}</button> &nbsp;
+                            {editID && <button type="submit" className='btn btn-info' onClick={handleReset}>คืนค่า</button>}
                         </div>
                     </div>
-                </div>
+                </form>
 
                 <hr />
             </div>

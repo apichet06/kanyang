@@ -137,7 +137,7 @@ export default function datatable() {
 
             if (response.status === 200) {
 
-                showSuccessAlert(response.data.messages);
+                showSuccessAlert(response.data.message);
                 fetchData();
                 setUserData({
                     u_title: '',
