@@ -6,18 +6,20 @@ import { api } from "../../utils/config";
 import { formatPrice, formatDate, formatDateTime } from '../../utils/allfunctions';
 import Select from 'react-select';
 import { format } from 'date-fns';
+import { showErrorAlert, showSuccessAlert } from '../../utils/alertUtils';
+import Swal from 'sweetalert2';
 
 export default function datatable() {
 
 
     const columns = [
         { name: 'ลำดับ', selector: row => row.autoID, width: '62px' },
-        { name: 'ID', selector: row => row.w_number, width: '120px' },
+        { name: 'ID', selector: row => row.w_number, width: '130px' },
         { name: 'เลขหุ้น', selector: row => row.u_number, width: '110px' },
         { name: 'สามชิก', selector: row => row.username, width: '175px' },
         { name: 'รอบขายยางพารา', selector: row => row.r_around, width: '120px' },
         { name: 'ราคาขายยางพารา', selector: row => formatPrice(row.r_rubber_price) },
-        { name: 'น้ำหนัก', selector: row => Number(row.w_weigth).toFixed(2).toLocaleString() },
+        { name: 'น้ำหนัก/กิโลกรัม', selector: row => Number(row.w_weigth).toFixed(2).toLocaleString() },
         { name: 'จำนวนเงิน', selector: row => formatPrice(row.w_price) },
         { name: 'วันขาย', selector: row => formatDate(row.r_rubber_date), width: '110px' },
         { name: 'ผู้บันทึก', selector: row => row.uadmin, width: '180px' },
@@ -43,7 +45,7 @@ export default function datatable() {
     const [rubberprice, setRubberprice] = useState([]);
     const [users, serUsers] = useState([]);
 
-    const fatchDta = useCallback(async () => {
+    const fetchData = useCallback(async () => {
 
         const response = await axios.get(api + "/weightprice");
 
@@ -81,7 +83,7 @@ export default function datatable() {
 
                 const uers = response.data.data.map(item => ({
                     value: item.u_number,
-                    label: item.username
+                    label: item.u_number + ' ' + item.username
                 }
                 ))
 
@@ -96,10 +98,72 @@ export default function datatable() {
 
 
 
-    const handleSubmit = useCallback(async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-    }, [])
+        try {
+            const Data = {
+                w_weigth,
+                r_number,
+                u_number,
+                w_admin: "U10000001"
+            }
+
+            const apiUrl = editID ? `${api}/weightprice/${editID}` : `${api}/weightprice`
+            const response = await (editID ? axios.put(apiUrl, Data) : axios.post(apiUrl, Data));
+
+            if (response.status === 200) {
+
+                showSuccessAlert(response.data.message);
+                fetchData();
+                handleReset()
+
+            }
+
+        } catch (error) {
+
+            showErrorAlert(error.response.data.message)
+        }
+
+
+    }
+
+
+    const handleDelete = async (id) => {
+
+
+        try {
+            Swal.fire({
+                title: "ยืนยันการลบ",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'ลบ!'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+
+                    try {
+                        const response = await axios.delete(`${api}/weightprice/${id}`, {
+                            headers: { 'Content-Type': 'application/json' },
+                        });
+
+                        if (response.status === 200) {
+                            console.log(response.data);
+                            await showSuccessAlert(response.data.message)
+                            // รีเฟรชข้อมูลหลังจากลบ
+                            await fetchData();
+                        }
+                    } catch (error) {
+
+                        showErrorAlert(error.message)
+                    }
+                }
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const handleEdit = async (id) => {
         setEditID(id)
@@ -124,27 +188,26 @@ export default function datatable() {
     const ChangeUsers = (e) => {
         const u_numbers = e.value;
         setUnumber(u_numbers)
-        // handleInputChange({ target: { name: 'u_number', value: selectprovices } });
 
     }
 
 
 
     useEffect(() => {
-        fatchDta();
+        fetchData();
         handlerubberpriceChange()
         handleUserschange()
-    }, [fatchDta, handlerubberpriceChange, handleUserschange])
+    }, [fetchData, handlerubberpriceChange, handleUserschange])
 
     return (
 
         <>
             <div className='col-md-7 text-end mb-3'>
-                <form >
+                <form onSubmit={handleSubmit}>
                     <div className="mb-3 row">
                         <label className="col-sm-3 col-form-label">รอบขายยางพารา</label>
                         <div className="col-sm-6">
-                            <select className="form-select" value={r_number} onChange={(e) => setRnumber(e.target.value)}>
+                            <select className="form-select" value={r_number} onChange={(e) => setRnumber(e.target.value)} required>
                                 <option value="">เลือกรอบขายยางพารา</option>
                                 {rubberprice.map(item => (
                                     <option key={item.r_number} value={item.r_number}>{format(item.r_rubber_date, 'yyyy/MM/dd') + ' รอบ ' + item.r_around + ' ราคา ' + item.r_rubber_price}</option>
@@ -152,7 +215,7 @@ export default function datatable() {
                             </select>
                         </div>
                     </div>
-                    {/* <option key={item.r_number} value={item.r_number}>{format(item.r_rubber_date, 'yyyy/MM/dd') + ' รอบ ' + item.r_around + ' ราคา ' + item.r_rubber_price}</option> */}
+
                     <div className="mb-3 row">
                         <label className="col-sm-3 col-form-label">ชื่อสมาชิก</label>
                         <div className="col-sm-6">
@@ -165,7 +228,7 @@ export default function datatable() {
                         </div>
                     </div>
                     <div className="mb-3 row">
-                        <label className="col-sm-3 col-form-label">น้ำหนักยางพาราที่ช่างได้</label>
+                        <label className="col-sm-3 col-form-label">น้ำหนักยางพาราที่ได้/กิโลกรัม</label>
                         <div className="col-sm-6">
                             <input type="number" className="form-control" value={w_weigth} onChange={(e) => setWweight(e.target.value)} />
                         </div>
@@ -173,7 +236,7 @@ export default function datatable() {
                     <div className="mb-3 row">
                         <label className="col-sm-3 col-form-label"> </label>
                         <div className="col-sm-6 text-center">
-                            <button type="submit" className='btn btn-primary' onClick={(e) => handleSubmit(e)}>{editID ? 'แก้ไข' : 'เพิ่ม'}</button> &nbsp;
+                            <button type="submit" className='btn btn-primary' >{editID ? 'แก้ไข' : 'เพิ่ม'}</button> &nbsp;
                             {editID && <button type="submit" className='btn btn-info' onClick={handleReset}>คืนค่า</button>}
                         </div>
                     </div>
@@ -194,6 +257,8 @@ export default function datatable() {
                         />
                     </div>
                 </div>
+                <hr />
+                <strong className='text-danger'>การจัดการข้อมูลการบันทึกน้ำหนักสามารถกรอกได้ 1 คนต่อ 1 รอบการขายไม่สามารถกรอกข้อมูลการขายซ้ำได้</strong>
             </div>
         </>
 

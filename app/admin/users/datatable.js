@@ -155,7 +155,7 @@ export default function datatable() {
             }
         } catch (error) {
             console.log(error.message);
-            showErrorAlert(error.message);
+            showErrorAlert(error.response.data.message);
         }
 
     }, [api, fetchData, userData])

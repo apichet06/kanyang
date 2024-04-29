@@ -13,13 +13,13 @@ export default function Headers() {
                     <div className="collapse navbar-collapse" id="navbarCollapse">
                         <ul className="navbar-nav me-auto mb-2 mb-md-0">
                             <li className="nav-item">
-                                <Link className="nav-link active" aria-current="page" href="/home">รายการขายยางประจำเดือน</Link>
+                                <Link className="nav-link active" aria-current="page" href="/admin/rubberPriceReview">รายการขายยางประจำเดือน</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" href="/home/history">ประวัติการขายยางพารา</Link>
+                                <Link className="nav-link" href="/admin/rubberPricehistory">ประวัติการขายยางพารา</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" href="/home/share">รายการปันผลประจำปี</Link>
+                                <Link className="nav-link" href="/admin/shareapercentReview">รายการปันผลประจำปี</Link>
                             </li>
                             <li className="nav-item dropdown">
                                 <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
