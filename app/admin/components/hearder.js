@@ -19,7 +19,7 @@ export default function Headers() {
                                 <Link className="nav-link" href="/admin/rubberPricehistory">ประวัติการขายยางพารา</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" href="/admin/shareapercentReview">รายการปันผลประจำปี</Link>
+                                <Link className="nav-link" href="/admin/shareapercentReview">รายงานปันผลประจำปี</Link>
                             </li>
                             <li className="nav-item dropdown">
                                 <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

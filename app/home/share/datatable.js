@@ -15,9 +15,9 @@ const columns = [
     { name: 'เปอร์เซ็นหุ้น', selector: row => (row.percent) + '%' },
     { name: 'เงินปันผลหุ้น', selector: row => formatPrice(row.shareCount) },
     { name: 'น้หนักหัวตันรวม', selector: row => row.weightSum },
-    { name: 'เปอร์เซ็นหัวตัน', selector: row => formatPrice(row.percent_yang) },
+    { name: 'เปอร์เซ็นหัวตัน', selector: row => (row.percent_yang) + '%' },
     { name: 'เงินปันผลหัวตัน', selector: row => formatPrice(row.weightPriceSum) },
-    { name: 'รวมเงินทั้งหมด', selector: row => formatPrice(row.sumPrice) },
+    { name: 'เงินปันผลรวม', selector: row => formatPrice(row.sumPrice) },
 ];
 
 
