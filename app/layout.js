@@ -1,10 +1,6 @@
 import { Prompt } from "next/font/google";
 import "./globals.css";
-
-
 import "bootstrap/dist/css/bootstrap.min.css";
-
-
 import InstallBootstrap from "./utils/installBootstrap";
 
 
