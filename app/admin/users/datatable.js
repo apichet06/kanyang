@@ -36,7 +36,8 @@ export default function datatable() {
 
     const columns = [
         { name: 'ลำดับ', selector: row => row.autoID, width: '65px' },
-        { name: 'เลขหุ้น', selector: row => row.u_number, width: '135px' },
+        { name: 'ID', selector: row => row.u_number, width: '135px' },
+        { name: 'เลขหุ้น', selector: row => row.u_share_id, width: '65px' },
         { name: 'ชื่อ-สกุล', selector: row => row.username, width: '175px' },
         { name: 'ที่อยู่', selector: row => row.u_addressfull, width: '470px' },
         { name: 'จำนวนหุ้น', selector: row => Number(row.u_share).toLocaleString() },

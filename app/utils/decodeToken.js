@@ -1,5 +1,5 @@
 // นำเข้าโมดูล cookies จาก next/headers
-import { cookies } from "next/headers";
+// import { cookies } from "next/headers";
 
 // สร้างฟังก์ชันสำหรับถอดรหัส Token
 export function decodeToken(token) {

@@ -6,20 +6,14 @@ export function middleware(request) {
 
     try {
         const token = request.cookies.get('token').value;
-        // console.log('====================================');
-        // console.log(token);
-        // console.log('====================================');
-        // console.log('====================================');
-        // console.log(request.url);
-        // console.log('====================================');
 
 
-        const decodedToken = decodeToken(token);
-        if (decodedToken) {
-            console.log("Decoded Token:", decodedToken);
-        } else {
-            console.log("Failed to decode token.");
-        }
+        // const decodedToken = decodeToken(token);
+        // if (decodedToken) {
+        //     console.log("Decoded Token:", decodedToken);
+        // } else {
+        //     console.log("Failed to decode token.");
+        // }
 
         return NextResponse.next()
     } catch (error) {

@@ -1,9 +1,9 @@
 'use client'
-
 import { useState } from "react";
 import { api } from "./utils/config";
 import axios from "axios";
 import Cookies from 'js-cookie';
+import { decodeToken } from "./utils/decodeToken"
 
 
 export default function Home() {
@@ -20,14 +20,22 @@ export default function Home() {
         u_number, u_password
       }
       const response = await axios.post(`${api}/users/login`, Data);
-      console.log(response);
+
       if (response.status === 200) {
         Cookies.set('token', response.data.token);
 
         setMessage("ล็อกอินสำเร็จ!")
-        window.location.href = "/admin";
+        const token = Cookies.get('token');
+        const decodedToken = decodeToken(token);
+        if (decodedToken)
+          if (decodedToken.status === 'admin')
+            window.location.href = "/admin";
+          else
+            window.location.href = "/home";
       }
+
     } catch (error) {
+      // console.log(error.message);
       setMessage("ล็อกอินไม่สำเร็จ!")
     }
 
