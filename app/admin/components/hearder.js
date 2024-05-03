@@ -1,12 +1,19 @@
-import React from 'react'
+import React from 'react';
 import Link from 'next/link';
 import styles from '../page.module.css';
-import { decodeToken } from "../../utils/decodeToken"
-import { cookies } from "next/headers"
+import { decodeToken } from '../../utils/decodeToken';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation'
 
 export default function Headers() {
     const token = cookies().get('token').value;
-    const decodedToken = decodeToken(token);
+    const decoded = decodeToken(token);
+
+    async function createInvoice() {
+        'use server'
+        cookies().delete('token');
+        redirect("/")
+    }
 
     return (
         <header>
@@ -40,13 +47,13 @@ export default function Headers() {
                                 </ul>
                             </li>
                         </ul>
-                        <form className="d-flex">
+                        <form className="d-flex" action={createInvoice} >
                             <ul className="navbar-nav me-auto mb-1 mb-md-0">
                                 <li className="nav-item">
-                                    <Link className="nav-link active" aria-current="page" href="#">{decodedToken.username} </Link>
+                                    <Link className="nav-link active" aria-current="page" href="#">{decoded.username}</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" href="/" type="submit">ออกจากระบบ</Link>
+                                    <button className="nav-link" type="submit">ออกจากระบบ</button>
                                 </li>
                             </ul>
                         </form>

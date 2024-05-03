@@ -1,23 +1,21 @@
-'use client'
-
 import Link from 'next/link';
 import styles from '../page.module.css';
-import { Showuserlogin } from '../../utils/showuserlogin'
-import Cookies from 'js-cookie';
+
+import { decodeToken } from '../../utils/decodeToken';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation'
 
 export default function Headers() {
 
+    const token = cookies().get('token').value;
+    const decoded = decodeToken(token);
 
+    async function createInvoice() {
+        'use server'
+        cookies().delete('token');
+        redirect("/")
+    }
 
-    const logOut = async (event) => {
-        event.preventDefault();
-        try {
-            Cookies.remove('token')
-            window.location.href = '/';
-        } catch (error) {
-            console.error("เกิดข้อผิดพลาดในการล็อกเอาท์: ", error);
-        }
-    };
     return (
         <header>
             <nav className={`navbar navbar-expand-md navbar-dark fixed-top bg-dark shadow ${styles['navbar-bottom-line']}`}>
@@ -38,13 +36,13 @@ export default function Headers() {
                                 <Link className="nav-link" href="/home/share">รายงานปันผลประจำปี</Link>
                             </li>
                         </ul>
-                        <form className="d-flex"  >
+                        <form className="d-flex" action={createInvoice} >
                             <ul className="navbar-nav me-auto mb-1 mb-md-0">
                                 <li className="nav-item">
-                                    <Link className="nav-link active" aria-current="page" href="#"><Showuserlogin /></Link>
+                                    <Link className="nav-link active" aria-current="page" href="#">{decoded.username}</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <a className="nav-link" onClick={logOut}>ออกจากระบบ</a>
+                                    <button className="nav-link"  >ออกจากระบบ</button>
                                 </li>
                             </ul>
                         </form>
