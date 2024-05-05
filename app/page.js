@@ -4,11 +4,9 @@ import { api } from "./utils/config";
 import axios from "axios";
 import Cookies from 'js-cookie';
 import { decodeToken } from "./utils/decodeToken"
-
+import { redirect } from "react-router-dom";
 
 export default function Home() {
-
-
 
   const [u_number, setUnumber] = useState('');
   const [u_password, setUpassword] = useState('');
@@ -31,9 +29,11 @@ export default function Home() {
         const decodedToken = decodeToken(token);
         if (decodedToken)
           if (decodedToken.status === 'admin')
-            window.location.href = "/admin";
+            return redirect("/admin")
+          // window.location.href = "/admin";
           else
-            window.location.href = "/home";
+            return redirect("/home")
+        // window.location.href = "/home";
       }
 
     } catch (error) {

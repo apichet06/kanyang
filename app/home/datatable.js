@@ -6,6 +6,8 @@ import { format } from 'date-fns';
 import axios from 'axios';
 import { api } from "../utils/config";
 import { formatPrice, formatDate } from '../utils/allfunctions';
+import { decodeToken } from '../utils/decodeToken';
+import Cookie from 'js-cookie'
 
 const columns = [
     { name: 'ID', selector: row => row.w_number },
@@ -21,12 +23,16 @@ const columns = [
 
 
 export default function Datatable() {
+
+    const token = Cookie.get('token');
+    const userId = decodeToken(token)?.userId;
+
     const [data, setData] = useState([]);
     const [pending, setPending] = useState(true);
 
     const showData = useCallback(async () => {
 
-        const response = await axios.get(api + "/weightprice/users/U10000001");
+        const response = await axios.get(api + "/weightprice/users/" + userId);
 
         if (response.status === 200) {
 
@@ -36,7 +42,7 @@ export default function Datatable() {
             throw new Error("ไม่พบข้อมูล");
         }
 
-    }, [api])
+    }, [api, userId])
 
     useEffect(() => {
         showData();
