@@ -20,9 +20,10 @@ export default function Datatable() {
 
 
     const columns = [
-        { name: 'ปี', selector: row => row.r_rubber_year },
-        { name: 'เลขหุ้น', selector: row => row.u_number },
+        { name: 'ปี', selector: row => row.r_rubber_year, width: '65px' },
+        { name: 'เลขหุ้น', selector: row => row.u_number, width: '110px' },
         { name: 'ชื่อ-สกุล', selector: row => row.u_title + '' + row.u_firstname + ' ' + row.u_lastname, width: '175px' },
+        { name: 'ที่อยู่', selector: row => row.u_address, width: '200px' },
         { name: 'จำนวนหุ้น', selector: row => formatPrice(row.u_share) },
         { name: 'เปอร์เซ็นหุ้น', selector: row => (row.percent) + '%' },
         { name: 'เงินปันผลหุ้น', selector: row => formatPrice(row.Sumpercentshare) },
