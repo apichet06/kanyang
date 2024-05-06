@@ -5,7 +5,7 @@ import { api } from './utils/config'
 import { cookies } from "next/headers"
 import { decodeToken } from "./utils/decodeToken"
 import { redirect } from 'next/navigation'
-import { LoginAction } from './redirect'
+import { LoginAction } from './loginAction'
 import { useRouter } from 'next/router';
 
 export async function login(prevState, formData) {

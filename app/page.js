@@ -4,7 +4,7 @@ import { api } from "./utils/config";
 import axios from "axios";
 import Cookies from 'js-cookie';
 import { decodeToken } from "./utils/decodeToken"
-import { redirect } from "react-router-dom";
+import { LoginAction } from './loginAction'
 
 export default function Home() {
 
@@ -23,24 +23,17 @@ export default function Home() {
 
       if (response.status === 200) {
         Cookies.set('token', response.data.token);
-
         setMessage("ล็อกอินสำเร็จ!")
         const token = Cookies.get('token');
         const decodedToken = decodeToken(token);
         if (decodedToken)
-          if (decodedToken.status === 'admin')
-            return redirect("/admin")
-          // window.location.href = "/admin";
-          else
-            return redirect("/home")
-        // window.location.href = "/home";
+          LoginAction(decodedToken.status)
       }
 
     } catch (error) {
-      // console.log(error.message);
+      console.log(error.message);
       setMessage("ล็อกอินไม่สำเร็จ!")
     }
-
 
   }
 
@@ -53,7 +46,7 @@ export default function Home() {
               {/* <img className="mb-4" src="/docs/5.0/assets/brand/bootstrap-logo.svg" alt width={72} height={57} /> */}
               <h1 className="h3 mb-3 fw-normal">กรุณาเข้าสู่ระบบ</h1>
               <div className="form-floating mb-2">
-                <input type="text" className="form-control" name='u_number' placeholder="รหัสสมาชิก" onChange={(e) => setUnumber(e.target.value)} />
+                <input type="text" className="form-control" name='u_number' autoComplete="off" placeholder="รหัสสมาชิก" onChange={(e) => setUnumber(e.target.value)} />
                 <label htmlFor="floatingInput">รหัสสมาชิก</label>
               </div>
               <div className="form-floating mb-3">
