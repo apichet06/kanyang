@@ -6,24 +6,34 @@ import { format } from 'date-fns';
 import axios from 'axios';
 import { api } from "../../utils/config";
 import { formatPrice } from '../../utils/allfunctions';
-
-const columns = [
-    { name: 'ปี', selector: row => row.year_w_datetime },
-    { name: 'เลขหุ้น', selector: row => row.u_number },
-    { name: 'ชื่อ-สกุล', selector: row => row.u_title + '' + row.u_firstname + ' ' + row.u_lastname, width: '175px' },
-    { name: 'จำนวนหุ้น', selector: row => formatPrice(row.u_share) },
-    { name: 'เปอร์เซ็นหุ้น', selector: row => (row.percent) + '%' },
-    { name: 'เงินปันผลหุ้น', selector: row => formatPrice(row.shareCount) },
-    { name: 'น้หนักหัวตันรวม', selector: row => row.weightSum },
-    { name: 'เปอร์เซ็นหัวตัน', selector: row => (row.percent_yang) + '%' },
-    { name: 'เงินปันผลหัวตัน', selector: row => formatPrice(row.weightPriceSum) },
-    { name: 'เงินปันผลรวม', selector: row => formatPrice(row.sumPrice) },
-];
+import { decodeToken } from '../../utils/decodeToken';
+import Cookie from 'js-cookie'
 
 
 export default function Datatable() {
+
+    const token = Cookie.get('token');
+    const userId = decodeToken(token)?.userId;
+
     const [data, setData] = useState([]);
     const [pending, setPending] = useState(true);
+
+
+    const columns = [
+        { name: 'ปี', selector: row => row.r_rubber_year },
+        { name: 'เลขหุ้น', selector: row => row.u_number },
+        { name: 'ชื่อ-สกุล', selector: row => row.u_title + '' + row.u_firstname + ' ' + row.u_lastname, width: '175px' },
+        { name: 'จำนวนหุ้น', selector: row => formatPrice(row.u_share) },
+        { name: 'เปอร์เซ็นหุ้น', selector: row => (row.percent) + '%' },
+        { name: 'เงินปันผลหุ้น', selector: row => formatPrice(row.Sumpercentshare) },
+        { name: 'น้ำหนักหัวตันรวม', selector: row => row.Sumweight },
+        { name: 'เปอร์เซ็นหัวตัน', selector: row => (row.percent_yang) + '%' },
+        { name: 'เงินปันผลหัวตัน', selector: row => formatPrice(row.sumhuatun) },
+        { name: 'เงินปันผลรวม', selector: row => formatPrice(row.sumPrice) },
+    ];
+
+
+
 
     const showData = useCallback(async () => {
 

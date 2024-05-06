@@ -10,7 +10,6 @@ import { decodeToken } from '../../utils/decodeToken';
 import Cookie from 'js-cookie'
 
 
-
 export default function Datatable() {
 
     const token = Cookie.get('token');
@@ -52,7 +51,7 @@ export default function Datatable() {
 
     return (
         <DataTable
-            title="ประวัติรายการขายยางประจำเดือน"
+            title="ประวัติรายการขายยางพาราทั้งหมด"
             columns={columns}
             data={data}
             pagination
