@@ -11,11 +11,13 @@ export default function Home() {
   const [u_number, setUnumber] = useState('');
   const [u_password, setUpassword] = useState('');
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+
 
   const formAction = async (e) => {
     e.preventDefault();
     try {
-
+      setLoading(true);
       const Data = {
         u_number, u_password
       }
@@ -26,8 +28,11 @@ export default function Home() {
         setMessage("ล็อกอินสำเร็จ!")
         const token = Cookies.get('token');
         const decodedToken = decodeToken(token);
-        if (decodedToken)
+        if (decodedToken) {
           LoginAction(decodedToken.status)
+          setLoading(false);
+        }
+
       }
 
     } catch (error) {
@@ -56,7 +61,7 @@ export default function Home() {
               <strong className='text-danger'>
                 {message}
               </strong>
-              <button className="w-100 btn btn-lg btn-primary" type='submit'>เข้าสู่ระบบ</button>
+              <button className="w-100 btn btn-lg btn-primary" type='submit' disabled={loading}>{loading ? 'Loading...' : 'เข้าสู่ระบบ'}</button>
               <p className="mt-5 mb-3 text-muted">Copyright &copy; Apichet Singnakrong 2024</p>
             </form>
           </main>
