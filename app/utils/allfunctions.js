@@ -14,3 +14,9 @@ export function formatDate(date) {
 export function formatDateTime(date) {
     return format(date, 'yyyy/MM/dd HH:mm')
 }
+
+
+export function isLeapYear(year) {
+    const isLeap = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+    return isLeap ? 29 : 28;
+}

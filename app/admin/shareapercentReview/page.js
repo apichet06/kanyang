@@ -2,21 +2,22 @@
 
 import { useEffect, useCallback, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import { format } from 'date-fns';
+
 import axios from 'axios';
 import { api } from "../../utils/config";
-import { formatPrice } from '../../utils/allfunctions';
+import { formatPrice, isLeapYear } from '../../utils/allfunctions';
 
 
 
 
 export default function Datatable() {
+
     const [data, setData] = useState([]);
     const [pending, setPending] = useState(true);
     const [users, setUsers] = useState([])
     const [percentYears, setPercentYears] = useState([])
     const [year, setYear] = useState('')
-    const [u_firstname, setUfirstname] = useState('')
+    const [u_username, setUfirstname] = useState('')
 
     const userData = useCallback(async () => {
         try {
@@ -32,6 +33,7 @@ export default function Datatable() {
 
     const percentYear = useCallback(async () => {
         try {
+
             const response = await axios.get(api + "/sharepercent")
             if (response.status === 200)
                 setPercentYears(response.data.data)
@@ -43,7 +45,10 @@ export default function Datatable() {
     const showData = useCallback(async () => {
 
         try {
-            const response = await axios.get(api + "/sharepercent/share");
+
+
+            const Data = { year, u_username }
+            const response = await axios.post(api + "/sharepercent/share", Data);
             if (response.status === 200) {
                 setData(response.data.data);
                 setPending(false);
@@ -52,26 +57,20 @@ export default function Datatable() {
             throw error
         }
 
-    }, [api])
-
-
-
-    const handleSearch = useCallback(async () => {
-        console.log(year + "=" + u_firstname);
-    }, [year, u_firstname])
-
+    }, [api, year, u_username])
 
     useEffect(() => {
         showData();
         userData()
         percentYear()
-        handleSearch()
-    }, [showData, userData, percentYear, handleSearch])
+    }, [showData, userData, percentYear])
 
+    const currentDate = new Date().getFullYear();
+    const nextYear = year === '' ? currentDate + 1 : parseInt(year) + 1;
+    const lastDay = isLeapYear(nextYear);
 
-
-
-
+    const yearStart = `${year || currentDate}-03-01`;
+    const yearEnd = `${nextYear}-02-${lastDay}`;
 
     const columns = [
         { name: 'ปี', selector: row => row.r_rubber_year, width: '65px' },
@@ -111,7 +110,7 @@ export default function Datatable() {
                     </div>
                     <div className='col-md-10 mt-5'>
                         <hr />
-                        <h4>รายงานเงินปันผลประจำปี</h4>
+                        <h4>รายงานเงินปันผลประจำปี {yearStart + ' ถึง ' + yearEnd}</h4>
                         <hr />
                         <DataTable
                             columns={columns}
