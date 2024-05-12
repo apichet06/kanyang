@@ -81,7 +81,7 @@ export default function datatable() {
                         }
                     } catch (error) {
 
-                        showErrorAlert(error.message)
+                        showErrorAlert(error.response.data.message)
                     }
                 }
             });
@@ -148,23 +148,23 @@ export default function datatable() {
         <>
 
             <div className='col-md-9 text-end mb-3'>
-                <form >
+                <form onSubmit={(e) => handleSubmit(e)}>
                     <div className="mb-3 row">
                         <label className="col-sm-2 col-form-label">ราคาประมูลยางพารา</label>
                         <div className="col-sm-6">
-                            <input type="text" className="form-control" value={r_rubber_price} name="r_rubber_price" placeholder='ราคาประมูลยางพารา' onChange={(e) => setRrubberPrice(e.target.value)} />
+                            <input type="text" className="form-control" value={r_rubber_price} name="r_rubber_price" placeholder='ราคาประมูลยางพารา' onChange={(e) => setRrubberPrice(e.target.value)} required />
                         </div>
                     </div>
                     <div className="mb-3 row">
                         <label className="col-sm-2 col-form-label">วันที่ขาย</label>
                         <div className="col-sm-6">
-                            <input type="date" className="form-control" value={r_rubber_date} name="r_rubber_date" onChange={(e) => setRrubberDate(e.target.value)} />
+                            <input type="date" className="form-control" value={r_rubber_date} name="r_rubber_date" onChange={(e) => setRrubberDate(e.target.value)} required />
                         </div>
                     </div>
                     <div className="mb-3 row">
                         <label className="col-sm-2 col-form-label"> </label>
                         <div className="col-sm-6 text-center">
-                            <button type="submit" className='btn btn-primary' onClick={(e) => handleSubmit(e)}>{editID ? 'แก้ไข' : 'เพิ่ม'}</button> &nbsp;
+                            <button type="submit" className='btn btn-primary'>{editID ? 'แก้ไข' : 'เพิ่ม'}</button> &nbsp;
                             {editID && <button type="submit" className='btn btn-info' onClick={handleReset}>คืนค่า</button>}
                         </div>
                     </div>

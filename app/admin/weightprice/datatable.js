@@ -8,14 +8,18 @@ import Select from 'react-select';
 import { format } from 'date-fns';
 import { showErrorAlert, showSuccessAlert } from '../../utils/alertUtils';
 import Swal from 'sweetalert2';
+import { decodeToken } from '../../utils/decodeToken';
+import Cookie from 'js-cookie'
 
 export default function datatable() {
 
+    const token = Cookie.get('token');
+    const userId = decodeToken(token)?.userId;
 
     const columns = [
         { name: 'ลำดับ', selector: row => row.autoID, width: '62px' },
         { name: 'ID', selector: row => row.w_number, width: '130px' },
-        { name: 'เลขหุ้น', selector: row => row.u_number, width: '110px' },
+        { name: 'เลขหุ้น', selector: row => row.u_share_id, width: '110px' },
         { name: 'สามชิก', selector: row => row.username, width: '175px' },
         { name: 'รอบขายยางพารา', selector: row => row.r_around, width: '120px' },
         { name: 'ราคาขายยางพารา', selector: row => formatPrice(row.r_rubber_price) },
@@ -40,26 +44,41 @@ export default function datatable() {
     const [editID, setEditID] = useState('');
     const [pending, setPending] = useState(true);
     const [w_weigth, setWweight] = useState('');
+    const [u_firstname, setUfirstname] = useState('')
     const [r_number, setRnumber] = useState('');
     const [u_number, setUnumber] = useState('');
     const [rubberprice, setRubberprice] = useState([]);
     const [users, serUsers] = useState([]);
+    const [searchuser, setSearchuser] = useState([]);
 
     const fetchData = useCallback(async () => {
 
-        const response = await axios.get(api + "/weightprice");
+        const Data = {
+            r_number, u_firstname
+        }
+        const response = await axios.post(api + "/weightprice/weight", Data);
 
         if (response.status === 200) {
+
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+            const currentMonth = currentDate.getMonth() + 1;
+
             const newData = await response.data.data.map((item, index) => ({
                 ...item, autoID: index + 1
-            }))
+            })).filter(item => {
+                const itemDate = new Date(item.r_rubber_date);
+                const itemYear = itemDate.getFullYear();
+                const itemMonth = itemDate.getMonth() + 1;
+                return itemYear === currentYear && itemMonth === currentMonth;
+            })
             setData(newData);
             setPending(false);
         } else {
             throw new Error("ไม่พบข้อมูล");
         }
 
-    }, [api])
+    }, [api, u_firstname])
 
 
     const handlerubberpriceChange = useCallback(async () => {
@@ -67,6 +86,7 @@ export default function datatable() {
             const response = await axios.get(api + '/rubberprice')
             if (response.status === 200) {
 
+                setRnumber(response.data.data[0].r_number)
 
                 setRubberprice(response.data.data)
             }
@@ -83,11 +103,12 @@ export default function datatable() {
 
                 const uers = response.data.data.map(item => ({
                     value: item.u_number,
-                    label: item.u_number + ' ' + item.username
+                    label: item.username + ' - ' + item.u_share_id
                 }
                 ))
 
                 serUsers(uers)
+                setSearchuser(response.data.data)
             }
 
         } catch (error) {
@@ -106,7 +127,7 @@ export default function datatable() {
                 w_weigth,
                 r_number,
                 u_number,
-                w_admin: "U10000001"
+                w_admin: userId
             }
 
             const apiUrl = editID ? `${api}/weightprice/${editID}` : `${api}/weightprice`
@@ -114,7 +135,7 @@ export default function datatable() {
 
             if (response.status === 200) {
 
-                showSuccessAlert(response.data.message);
+                // showSuccessAlert(response.data.message);
                 fetchData();
                 handleReset()
 
@@ -180,7 +201,8 @@ export default function datatable() {
         setEditID('')
         setWweight('')
         setUnumber('')
-        setRnumber('')
+        // setUsers({ value: '' });
+
     }
 
 
@@ -202,63 +224,87 @@ export default function datatable() {
     return (
 
         <>
-            <div className='col-md-7 text-end mb-3'>
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-3 row">
-                        <label className="col-sm-3 col-form-label">รอบขายยางพารา</label>
-                        <div className="col-sm-6">
-                            <select className="form-select" value={r_number} onChange={(e) => setRnumber(e.target.value)} required>
-                                <option value="">เลือกรอบขายยางพารา</option>
-                                {rubberprice.map(item => (
-                                    <option key={item.r_number} value={item.r_number}>{format(item.r_rubber_date, 'yyyy/MM/dd') + ' รอบ ' + item.r_around + ' ราคา ' + item.r_rubber_price}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
+            <div className='container'>
+                <div className='row justify-content-center'>
+                    <div className='col-md-7 text-end mb-3'>
+                        <form onSubmit={handleSubmit}>
+                            <div className="mb-3 row">
+                                <label className="col-sm-3 col-form-label">รอบขาย/ราคาประมูลยาง</label>
+                                <div className="col-sm-6">
+                                    <select className="form-select" value={r_number} onChange={(e) => setRnumber(e.target.value)} required>
+                                        <option value="">เลือกรอบขาย/ราคาประมูลยาง</option>
+                                        {rubberprice.map(item => (
+                                            <option key={item.r_number} value={item.r_number}>{format(item.r_rubber_date, 'yyyy/MM/dd') + ' รอบ ' + item.r_around + ' ราคาประมูล ' + item.r_rubber_price}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
 
-                    <div className="mb-3 row">
-                        <label className="col-sm-3 col-form-label">ชื่อสมาชิก</label>
-                        <div className="col-sm-6">
-                            <Select
-                                value={users.find((option) => option.value === u_number)}
-                                options={users}
-                                onChange={ChangeUsers}
-                                required
-                            />
-                        </div>
-                    </div>
-                    <div className="mb-3 row">
-                        <label className="col-sm-3 col-form-label">น้ำหนักยางพาราที่ได้/กิโลกรัม</label>
-                        <div className="col-sm-6">
-                            <input type="number" className="form-control" value={w_weigth} onChange={(e) => setWweight(e.target.value)} />
-                        </div>
-                    </div>
-                    <div className="mb-3 row">
-                        <label className="col-sm-3 col-form-label"> </label>
-                        <div className="col-sm-6 text-center">
-                            <button type="submit" className='btn btn-primary' >{editID ? 'แก้ไข' : 'เพิ่ม'}</button> &nbsp;
-                            {editID && <button type="submit" className='btn btn-info' onClick={handleReset}>คืนค่า</button>}
-                        </div>
-                    </div>
-                </form >
+                            <div className="mb-3 row">
+                                <label className="col-sm-3 col-form-label">ชื่อสมาชิก</label>
+                                <div className="col-sm-6">
+                                    <Select
+                                        value={users.find((option) => option.value === u_number)}
+                                        options={users}
+                                        onChange={ChangeUsers}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div className="mb-3 row">
 
-                <hr />
-            </div >
+                                <label className="col-sm-3 col-form-label">น้ำหนักยางพาราที่ได้/กิโลกรัม</label>
+                                <div className="col-sm-6">
+                                    <input type="number" className="form-control" value={w_weigth} onChange={(e) => setWweight(e.target.value)} />
+                                </div>
+                            </div>
+                            <div className="mb-3 row">
+                                <label className="col-sm-3 col-form-label"> </label>
+                                <div className="col-sm-6 text-center">
+                                    <button type="submit" className='btn btn-primary' >{editID ? 'แก้ไข' : 'เพิ่ม'}</button> &nbsp;
+                                    {editID && <button type="submit" className='btn btn-info' onClick={handleReset}>คืนค่า</button>}
+                                </div>
+                            </div>
+                        </form >
 
-            <div className="col-md-11">
-                <div className="card">
-                    <div className="card-body">
-                        <DataTable
-                            title="น้ำหนักยางพารา/ราคาขาย"
-                            columns={columns}
-                            data={data}
-                            pagination
-                            progressPending={pending}
-                        />
+                        <hr />
+                    </div >
+                </div>
+                <div className="row justify-content-center mb-4">
+                    <div className="col-md-3 ">
+                        <select className="form-select" onChange={(e) => setRnumber(e.target.value)} required>
+                            <option value="">เลือกรอบขาย/ราคาประมูลยาง</option>
+                            {rubberprice.map(item => (
+                                <option key={item.r_number} value={item.r_number}>{formatDate(item.r_rubber_date) + ' รอบ ' + item.r_around + ' ราคาประมูล ' + item.r_rubber_price}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="col-md-3 ">
+                        <input className="form-control" list="user" placeholder="ค้นหาชื่อสมาชิก" onChange={e => setUfirstname(e.target.value)} />
+                        <datalist id="user">
+                            {searchuser.map(user => (
+                                <option value={user.u_firstname}></option>
+                            ))}
+
+                        </datalist>
                     </div>
                 </div>
-                <hr />
-                <strong className='text-danger'>การจัดการข้อมูลการบันทึกน้ำหนักสามารถกรอกได้ 1 คนต่อ 1 รอบการขายไม่สามารถกรอกข้อมูลการขายซ้ำได้</strong>
+                <div className='row justify-content-center'>
+                    <div className="col-md-11 mb-5">
+                        <div className="card">
+                            <div className="card-body">
+                                <DataTable
+                                    title="น้ำหนักยางพารา/ราคาขาย"
+                                    columns={columns}
+                                    data={data}
+                                    pagination
+                                    progressPending={pending}
+                                />
+                            </div>
+                        </div>
+                        <strong className='text-danger '>การจัดการข้อมูลการบันทึกน้ำหนักสามารถกรอกได้ 1 คนต่อ 1 รอบการขายไม่สามารถกรอกข้อมูลการขายซ้ำได้</strong>
+                    </div>
+                </div>
             </div>
         </>
 

@@ -40,10 +40,10 @@ export default function Headers() {
                                 </a>
                                 <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><Link className="dropdown-item" href="../admin/users">สมาชิก</Link></li>
-                                    <li><Link className="dropdown-item" href="../admin/rubberPrice">ราคาขายยางพารา</Link></li>
+                                    <li><Link className="dropdown-item" href="../admin/rubberPrice">ราคาประมูลยางพารา</Link></li>
                                     <li><Link className="dropdown-item" href="../admin/sharePercent">แบ่งเปอร์เซ้นปันผลหุ้น/หัวตันต่อปี</Link></li>
                                     <li><hr className="dropdown-divider" /></li>
-                                    <li><Link className="dropdown-item" href="../admin/weightprice">น้ำหนักยางพารา</Link></li>
+                                    <li><Link className="dropdown-item" href="../admin/weightprice">น้ำหนักยางพาราช่างได้</Link></li>
                                 </ul>
                             </li>
                         </ul>

@@ -6,9 +6,13 @@ import axios from 'axios';
 import { api } from "../../utils/config";
 import Swal from 'sweetalert2';
 import { showErrorAlert, showSuccessAlert } from '../../utils/alertUtils';
-
+import { decodeToken } from '../../utils/decodeToken';
+import Cookie from 'js-cookie'
 
 export default function datatable() {
+
+    const token = Cookie.get('token');
+    const userId = decodeToken(token)?.userId;
 
     const [data, setData] = useState([]);
     const [pending, setPending] = useState(true);
@@ -179,7 +183,9 @@ export default function datatable() {
             districts_id: '',
             subdistricts_id: '',
             u_share: '',
-            u_status: ''
+            u_status: '',
+            u_admin: userId
+
         });
     })
 
