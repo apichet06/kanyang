@@ -59,6 +59,18 @@ export default function Datatable() {
 
     }, [api, year, u_username])
 
+    const exportExcel = async () => {
+        try {
+
+            const Data = { year, u_username }
+            const response = await axios.post(api + "/sharepercent/ExportShareToExcel", Data);
+
+        } catch (error) {
+            console.error('Error exporting Excel:', error);
+        }
+    }
+
+
     useEffect(() => {
         showData();
         userData()
@@ -110,7 +122,14 @@ export default function Datatable() {
                     </div>
                     <div className='col-md-10 mt-5'>
                         <hr />
-                        <h4>รายงานเงินปันผลประจำปี {yearStart + ' ถึง ' + yearEnd}</h4>
+                        <div className='row'>
+                            <div className='col-md-8'>
+                                <h4>รายงานเงินปันผลประจำปี {yearStart + ' ถึง ' + yearEnd}</h4>
+                            </div>
+                            <div className='col-md-4 text-end'>
+                                <button className='btn btn-sm btn-secondary' onClick={exportExcel}>Export Excel</button>
+                            </div>
+                        </div>
                         <hr />
                         <DataTable
                             columns={columns}

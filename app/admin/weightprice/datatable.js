@@ -50,11 +50,13 @@ export default function datatable() {
     const [rubberprice, setRubberprice] = useState([]);
     const [users, serUsers] = useState([]);
     const [searchuser, setSearchuser] = useState([]);
+    const [searchrubber, setSearchrubber] = useState([]);
+    const [r_numberSearch, setRnumberSearch] = useState('');
 
     const fetchData = useCallback(async () => {
 
         const Data = {
-            r_number, u_firstname
+            r_number: r_numberSearch, u_firstname
         }
         const response = await axios.post(api + "/weightprice/weight", Data);
 
@@ -78,7 +80,7 @@ export default function datatable() {
             throw new Error("ไม่พบข้อมูล");
         }
 
-    }, [api, u_firstname])
+    }, [api, u_firstname, r_numberSearch])
 
 
     const handlerubberpriceChange = useCallback(async () => {
@@ -89,6 +91,19 @@ export default function datatable() {
                 setRnumber(response.data.data[0].r_number)
 
                 setRubberprice(response.data.data)
+
+                const currentDate = new Date();
+                const currentYear = currentDate.getFullYear();
+                const currentMonth = currentDate.getMonth() + 1;
+
+                const newData = await response.data.data.filter(item => {
+                    const itemDate = new Date(item.r_rubber_date);
+                    const itemYear = itemDate.getFullYear();
+                    const itemMonth = itemDate.getMonth() + 1;
+                    return itemYear === currentYear && itemMonth === currentMonth;
+                })
+
+                setSearchrubber(newData)
             }
 
         } catch (error) {
@@ -151,7 +166,6 @@ export default function datatable() {
 
 
     const handleDelete = async (id) => {
-
 
         try {
             Swal.fire({
@@ -266,15 +280,14 @@ export default function datatable() {
                                 </div>
                             </div>
                         </form >
-
                         <hr />
                     </div >
                 </div>
                 <div className="row justify-content-center mb-4">
                     <div className="col-md-3 ">
-                        <select className="form-select" onChange={(e) => setRnumber(e.target.value)} required>
+                        <select className="form-select" onChange={(e) => setRnumberSearch(e.target.value)} required>
                             <option value="">เลือกรอบขาย/ราคาประมูลยาง</option>
-                            {rubberprice.map(item => (
+                            {searchrubber.map(item => (
                                 <option key={item.r_number} value={item.r_number}>{formatDate(item.r_rubber_date) + ' รอบ ' + item.r_around + ' ราคาประมูล ' + item.r_rubber_price}</option>
                             ))}
                         </select>
@@ -285,7 +298,6 @@ export default function datatable() {
                             {searchuser.map(user => (
                                 <option value={user.u_firstname}></option>
                             ))}
-
                         </datalist>
                     </div>
                 </div>

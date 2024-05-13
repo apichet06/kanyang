@@ -26,7 +26,7 @@ export default function Headers() {
                     <div className="collapse navbar-collapse" id="navbarCollapse">
                         <ul className="navbar-nav me-auto mb-2 mb-md-0">
                             <li className="nav-item">
-                                <Link className="nav-link active" aria-current="page" href="/admin/rubberPriceReview">รายการขายยางประจำเดือน</Link>
+                                <Link className="nav-link" aria-current="page" href="/admin/rubberPriceReview">รายการขายยางประจำเดือน</Link>
                             </li>
                             <li className="nav-item">
                                 <Link className="nav-link" href="/admin/rubberPricehistory">ประวัติการขายยางพารา</Link>

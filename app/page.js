@@ -36,8 +36,9 @@ export default function Home() {
       }
 
     } catch (error) {
-      console.log(error.message);
+
       setMessage("ล็อกอินไม่สำเร็จ!")
+      setLoading(false);
     }
 
   }
