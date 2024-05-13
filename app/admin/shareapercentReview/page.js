@@ -19,6 +19,7 @@ export default function Datatable() {
     const [year, setYear] = useState('')
     const [u_username, setUfirstname] = useState('')
 
+
     const userData = useCallback(async () => {
         try {
             const response = await axios.get(api + "/users")
@@ -59,15 +60,34 @@ export default function Datatable() {
 
     }, [api, year, u_username])
 
-    const exportExcel = async () => {
+
+
+    // ฟังก์ชันสำหรับดาวน์โหลดไฟล์ Excel
+    const downloadExcelFile = async () => {
         try {
-
             const Data = { year, u_username }
-            const response = await axios.post(api + "/sharepercent/ExportShareToExcel", Data);
+            const response = await axios.post(api + "/sharepercent/ExportShareToExcel", Data, {
+                responseType: 'blob' // กำหนดประเภทข้อมูลเป็น blob เพื่อรับไฟล์
+            });
 
+            // สร้าง URL ของไฟล์ที่ดาวน์โหลด
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+
+            // สร้างลิงก์สำหรับดาวน์โหลดไฟล์
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'รายงานปันผลหุ้นประจำปี' + yearStart + ' ถึง ' + yearEnd + '.xlsx');
+            document.body.appendChild(link);
+
+            // คลิกลิงก์เพื่อดาวน์โหลดไฟล์
+            link.click();
+
+            // ลบ URL หลังจากดาวน์โหลดเสร็จ
+            window.URL.revokeObjectURL(url);
         } catch (error) {
-            console.error('Error exporting Excel:', error);
+            console.error('Error downloading Excel file:', error);
         }
+
     }
 
 
@@ -127,7 +147,11 @@ export default function Datatable() {
                                 <h4>รายงานเงินปันผลประจำปี {yearStart + ' ถึง ' + yearEnd}</h4>
                             </div>
                             <div className='col-md-4 text-end'>
-                                <button className='btn btn-sm btn-secondary' onClick={exportExcel}>Export Excel</button>
+                                <button className='btn btn-sm btn-secondary' onClick={downloadExcelFile}>Export Excel</button>
+                                {/* แสดงปุ่มดาวน์โหลดเมื่อมี URL ของไฟล์ Excel พร้อมใช้งาน */}
+
+
+
                             </div>
                         </div>
                         <hr />
