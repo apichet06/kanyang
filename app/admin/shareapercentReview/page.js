@@ -76,6 +76,7 @@ export default function Datatable() {
             // สร้างลิงก์สำหรับดาวน์โหลดไฟล์
             const link = document.createElement('a');
             link.href = url;
+
             link.setAttribute('download', 'รายงานปันผลหุ้นประจำปี' + yearStart + ' ถึง ' + yearEnd + '.xlsx');
             document.body.appendChild(link);
 
