@@ -30,9 +30,7 @@ export default function page() {
     const showData = useCallback(async () => {
 
 
-        const Data = {
-            r_number, u_firstname
-        }
+        const Data = { r_number, u_firstname }
         const response = await axios.post(api + "/weightprice/weight", Data);
 
         if (response.status === 200) {
@@ -94,6 +92,24 @@ export default function page() {
 
     }, [api])
 
+    const downloadExcelFile = async () => {
+        try {
+            const Data = { r_number, u_firstname }
+            const response = await axios.post(api + "/weightprice/Export", Data, { responseType: 'blob' });
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `รายการขายยางพาราประจำเดือน 2024/05 ${Date.now()} .xlsx`);
+            document.body.appendChild(link);
+            link.click();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error downloading Excel file:', error);
+        }
+    }
+
+
+
     useEffect(() => {
         showData();
         userData()
@@ -125,7 +141,16 @@ export default function page() {
                 </div>
                 <div className="row justify-content-center">
                     <div className='col-md-12 mt-5'>
-                        <h4>รายการขายยางพาราประจำเดือน {new Date().getFullYear()}/{String(new Date().getMonth() + 1).padStart(2, '0')}</h4>
+                        <hr />
+                        <div className='row'>
+                            <div className='col-md-7'>
+                                <h4>รายการขายยางพาราประจำเดือน {new Date().getFullYear()}/{String(new Date().getMonth() + 1).padStart(2, '0')}</h4>
+                            </div>
+                            <div className='col-md-5 text-end'>
+                                {(r_number || u_firstname) && (<button className='btn btn-sm btn-secondary' onClick={downloadExcelFile}>Export Excel</button>)}
+                                <div className='text-danger'>Export Excel จำเป็นต้องค้นข้อมูลทุกครั้ง</div>
+                            </div>
+                        </div>
                         <hr />
                         <DataTable
                             columns={columns}

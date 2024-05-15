@@ -71,12 +71,31 @@ export default function page() {
 
     }, [api])
 
+    const downloadExcelFile = async () => {
+        try {
+            const Data = { r_number, u_firstname }
+            const response = await axios.post(api + "/weightprice/Export", Data, { responseType: 'blob' });
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `รายการขายยางพาราประจำเดือน 2024/05 ${Date.now()} .xlsx`);
+            document.body.appendChild(link);
+            link.click();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error downloading Excel file:', error);
+        }
+    }
+
+    const xxx = rubberprice.filter((item) => {
+        return item.r_number == r_number;
+    });
+
     useEffect(() => {
         showData();
         userData()
         handlerubberpriceChange()
     }, [showData, userData, handlerubberpriceChange])
-
 
     return (
         <>
@@ -102,10 +121,19 @@ export default function page() {
                 </div>
                 <div className="row justify-content-center">
                     <div className='col-md-12 mt-5'>
-                        <h4>ประวัติการขายยางพาราทั้งหมด</h4>
+                        <hr />
+                        <div className='row'>
+                            <div className='col-md-7'>
+                                <h4>ประวัติการขายยางพาราทั้งหมด  {xxx.length > 0 ? 'ประจำรอบ ' + formatDate(xxx[0].r_rubber_date) : ''}</h4>
+                            </div>
+                            <div className='col-md-5 text-end'>
+                                {(r_number || u_firstname) && (<button className='btn btn-sm btn-secondary' onClick={downloadExcelFile}>Export Excel</button>)}
+                                <div className='text-danger'>Export Excel จำเป็นต้องค้นข้อมูลทุกครั้ง</div>
+                            </div>
+                        </div>
+                        <hr />
                         <hr />
                         <DataTable
-
                             columns={columns}
                             data={data}
                             pagination
@@ -114,7 +142,6 @@ export default function page() {
                     </div>
                 </div>
             </div>
-
 
         </>
     )
