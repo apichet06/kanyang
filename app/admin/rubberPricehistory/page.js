@@ -71,6 +71,10 @@ export default function page() {
 
     }, [api])
 
+    const dateSearch = rubberprice.filter((item) => {
+        return item.r_number == r_number;
+    });
+
     const downloadExcelFile = async () => {
         try {
             const Data = { r_number, u_firstname }
@@ -78,7 +82,7 @@ export default function page() {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', `รายการขายยางพาราประจำเดือน 2024/05 ${Date.now()} .xlsx`);
+            link.setAttribute('download', `ประวัติการขายยางพาราทั้งหมด ${dateSearch.length > 0 ? 'ประจำรอบ ' + formatDate(dateSearch[0].r_rubber_date) : ''} ${Date.now()}.xlsx`);
             document.body.appendChild(link);
             link.click();
             window.URL.revokeObjectURL(url);
@@ -87,9 +91,7 @@ export default function page() {
         }
     }
 
-    const xxx = rubberprice.filter((item) => {
-        return item.r_number == r_number;
-    });
+
 
     useEffect(() => {
         showData();
@@ -124,11 +126,10 @@ export default function page() {
                         <hr />
                         <div className='row'>
                             <div className='col-md-7'>
-                                <h4>ประวัติการขายยางพาราทั้งหมด  {xxx.length > 0 ? 'ประจำรอบ ' + formatDate(xxx[0].r_rubber_date) : ''}</h4>
+                                <h4>ประวัติการขายยางพาราทั้งหมด  {dateSearch.length > 0 ? 'ประจำรอบ ' + formatDate(dateSearch[0].r_rubber_date) : ''}</h4>
                             </div>
                             <div className='col-md-5 text-end'>
-                                {(r_number || u_firstname) && (<button className='btn btn-sm btn-secondary' onClick={downloadExcelFile}>Export Excel</button>)}
-                                <div className='text-danger'>Export Excel จำเป็นต้องค้นข้อมูลทุกครั้ง</div>
+                                <button className='btn btn-sm btn-secondary' onClick={downloadExcelFile}>Export Excel</button>
                             </div>
                         </div>
                         <hr />

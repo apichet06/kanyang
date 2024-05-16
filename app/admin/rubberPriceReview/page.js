@@ -4,6 +4,7 @@ import DataTable from 'react-data-table-component';
 import axios from 'axios';
 import { api } from "../../utils/config";
 import { formatPrice, formatDate } from '../../utils/allfunctions';
+import Link from 'next/link';
 
 export default function page() {
 
@@ -91,7 +92,9 @@ export default function page() {
 
 
     }, [api])
-
+    const dateSearch = rubberprice.filter((item) => {
+        return item.r_number == r_number;
+    });
     const downloadExcelFile = async () => {
         try {
             const Data = { r_number, u_firstname }
@@ -99,7 +102,7 @@ export default function page() {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', `รายการขายยางพาราประจำเดือน 2024/05 ${Date.now()} .xlsx`);
+            link.setAttribute('download', `รายการขายยางพาราประจำเดือน${dateSearch.length > 0 ? 'ประจำรอบ ' + formatDate(dateSearch[0].r_rubber_date) : ''} ${Date.now()}.xlsx`);
             document.body.appendChild(link);
             link.click();
             window.URL.revokeObjectURL(url);
@@ -107,7 +110,6 @@ export default function page() {
             console.error('Error downloading Excel file:', error);
         }
     }
-
 
 
     useEffect(() => {
@@ -148,6 +150,7 @@ export default function page() {
                             </div>
                             <div className='col-md-5 text-end'>
                                 {(r_number || u_firstname) && (<button className='btn btn-sm btn-secondary' onClick={downloadExcelFile}>Export Excel</button>)}
+                                <Link href="./printrubberPrice?r_number=1234" target='_black'> Print</Link>
                                 <div className='text-danger'>Export Excel จำเป็นต้องค้นข้อมูลทุกครั้ง</div>
                             </div>
                         </div>
@@ -158,7 +161,6 @@ export default function page() {
                             pagination
                             progressPending={pending}
                         />
-
                     </div>
                 </div>
 
