@@ -5,9 +5,9 @@ import axios from 'axios';
 import { api } from "../../utils/config";
 import { formatPrice, formatDate } from '../../utils/allfunctions';
 import Link from 'next/link';
+import Select from 'react-select';
 
 export default function page() {
-
 
     const columns = [
         { name: 'ID', selector: row => row.w_number, width: '130px' },
@@ -20,18 +20,16 @@ export default function page() {
         { name: 'วันที่บันทึก', selector: row => formatDate(row.w_datetime), width: '175px' },
     ];
 
-
     const [data, setData] = useState([]);
     const [pending, setPending] = useState(true);
     const [rubberprice, setRubberprice] = useState([]);
-    const [u_firstname, setUfirstname] = useState('')
+    const [u_number, setUnumber] = useState('');
     const [r_number, setRnumber] = useState('');
     const [users, setUsers] = useState([])
 
     const showData = useCallback(async () => {
 
-
-        const Data = { r_number, u_firstname }
+        const Data = { r_number, u_firstname: u_number }
         const response = await axios.post(api + "/weightprice/weight", Data);
 
         if (response.status === 200) {
@@ -53,7 +51,7 @@ export default function page() {
             throw new Error("ไม่พบข้อมูล");
         }
 
-    }, [api, r_number, u_firstname])
+    }, [api, r_number, u_number])
 
 
 
@@ -83,21 +81,26 @@ export default function page() {
 
     const userData = useCallback(async () => {
         try {
-            const response = await axios.get(api + "/users")
-            if (response.status === 200)
-                setUsers(response.data.data)
+            const response = await axios.get(api + "/users");
+            if (response.status === 200) {
+                const users = [{ value: '', label: '--- เลือกสมาชิก ---' }, ...response.data.data.map(item => ({
+                    value: item.u_number,
+                    label: item.u_share_id + ' - ' + item.username
+                }))];
+                setUsers(users);
+            }
         } catch (error) {
-            throw error
+            console.error('Error fetching users:', error);
         }
+    }, [api]);
 
 
-    }, [api])
     const dateSearch = rubberprice.filter((item) => {
         return item.r_number == r_number;
     });
     const downloadExcelFile = async () => {
         try {
-            const Data = { r_number, u_firstname }
+            const Data = { r_number, u_number }
             const response = await axios.post(api + "/weightprice/Export", Data, { responseType: 'blob' });
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
@@ -111,6 +114,9 @@ export default function page() {
         }
     }
 
+    const ChangeUsers = (e) => {
+        setUnumber(e ? e.value : '');
+    };
 
     useEffect(() => {
         showData();
@@ -132,13 +138,12 @@ export default function page() {
                         </select>
                     </div>
                     <div className="col-md-4 mt-5">
-                        <input className="form-control" list="user" placeholder="ค้นหาชื่อสมาชิก" onChange={e => setUfirstname(e.target.value)} />
-                        <datalist id="user">
-                            {users.map(user => (
-                                <option value={user.u_firstname}></option>
-                            ))}
-
-                        </datalist>
+                        <Select
+                            value={users.find(option => option.value === u_number)}
+                            options={users}
+                            onChange={ChangeUsers}
+                            required
+                        />
                     </div>
                 </div>
                 <div className="row justify-content-center">
@@ -149,9 +154,13 @@ export default function page() {
                                 <h4>รายการขายยางพาราประจำเดือน {new Date().getFullYear()}/{String(new Date().getMonth() + 1).padStart(2, '0')}</h4>
                             </div>
                             <div className='col-md-5 text-end'>
-                                {(r_number || u_firstname) && (<button className='btn btn-sm btn-secondary' onClick={downloadExcelFile}>Export Excel</button>)}
-                                <Link href="./printrubberPrice?r_number=1234" target='_black'> Print</Link>
-                                <div className='text-danger'>Export Excel จำเป็นต้องค้นข้อมูลทุกครั้ง</div>
+                                {(r_number || u_number) ?
+                                    <>
+                                        <button className='btn btn-sm btn-secondary' onClick={downloadExcelFile}>ส่งออก Excel</button>  {' '}
+                                        <Link href={`./printrubberprice?r_number=${r_number}&u_firstname=${u_number}`} target='_blank' className='btn btn-sm btn-dark'>พิมพ์เอกสาร</Link>
+
+                                    </> : <div className='text-danger'>Export Excel จำเป็นต้องค้นข้อมูลทุกครั้ง</div>
+                                }
                             </div>
                         </div>
                         <hr />

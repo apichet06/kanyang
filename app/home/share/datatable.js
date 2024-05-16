@@ -37,8 +37,11 @@ export default function Datatable() {
 
 
     const showData = useCallback(async () => {
-
-        const response = await axios.get(api + "/sharepercent/share");
+        console.log('====================================');
+        console.log(userId);
+        console.log('====================================');
+        const Data = { year: '', u_username: userId }
+        const response = await axios.post(api + "/sharepercent/share", Data);
 
         if (response.status === 200) {
 

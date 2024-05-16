@@ -23,10 +23,10 @@ export default function Datatable() {
 
     const columns = [
         { name: 'ID', selector: row => row.w_number },
-        { name: 'ปี/เดือน', selector: row => format(row.r_rubber_date, 'yyyy/MM') },
+        { name: 'วันขาย', selector: row => formatDate(row.r_rubber_date) },
         { name: 'รอบขาย', selector: row => row.r_around },
-        { name: 'น้ำหนัก', selector: row => Number(row.w_weigth).toLocaleString() },
-        { name: 'ราคาขาย', selector: row => formatPrice(row.r_rubber_price) },
+        { name: 'น้ำหนัก/กก.', selector: row => Number(row.w_weigth).toLocaleString() },
+        { name: 'ราคาประมูล', selector: row => formatPrice(row.r_rubber_price) },
         { name: 'จำนวนเงิน', selector: row => formatPrice(row.w_price) },
         { name: 'สมาชิก', selector: row => row.username, width: '175px' },
         { name: 'ผู้บันทึก', selector: row => row.uadmin, width: '175px' },
@@ -39,8 +39,19 @@ export default function Datatable() {
         const response = await axios.get(api + "/weightprice/users/" + userId);
 
         if (response.status === 200) {
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+            const currentMonth = currentDate.getMonth() + 1;
 
-            setData(response.data.data);
+            const filteredRubber = response.data.data.filter(item => {
+                const itemDate = new Date(item.r_rubber_date);
+                const itemYear = itemDate.getFullYear();
+                const itemMonth = itemDate.getMonth() + 1;
+                return itemYear === currentYear && itemMonth === currentMonth;
+            });
+
+            setData(filteredRubber)
+
             setPending(false);
         } else {
             throw new Error("ไม่พบข้อมูล");

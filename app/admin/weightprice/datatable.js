@@ -119,8 +119,7 @@ export default function datatable() {
                 const uers = response.data.data.map(item => ({
                     value: item.u_number,
                     label: item.username + ' - ' + item.u_share_id
-                }
-                ))
+                }))
 
                 serUsers(uers)
                 setSearchuser(response.data.data)

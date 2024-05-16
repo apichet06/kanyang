@@ -5,7 +5,7 @@ import DataTable from 'react-data-table-component';
 import { format } from 'date-fns';
 import axios from 'axios';
 import { api } from "../../utils/config";
-import { formatPrice, formatDateTime } from '../../utils/allfunctions';
+import { formatPrice, formatDateTime, formatDate } from '../../utils/allfunctions';
 import { decodeToken } from '../../utils/decodeToken';
 import Cookie from 'js-cookie'
 
@@ -17,14 +17,14 @@ export default function Datatable() {
 
     const columns = [
         { name: 'ID', selector: row => row.w_number },
-        { name: 'ปี/เดือน', selector: row => format(row.r_rubber_date, 'yyyy/MM') },
+        { name: 'วันขาย', selector: row => formatDate(row.r_rubber_date) },
         { name: 'รอบขาย', selector: row => row.r_around },
-        { name: 'น้ำหนัก', selector: row => Number(row.w_weigth).toLocaleString() },
-        { name: 'ราคาขาย', selector: row => formatPrice(row.r_rubber_price) },
+        { name: 'น้ำหนัก/กก.', selector: row => Number(row.w_weigth).toLocaleString() },
+        { name: 'ราคาประมูล', selector: row => formatPrice(row.r_rubber_price) },
         { name: 'จำนวนเงิน', selector: row => formatPrice(row.w_price) },
         { name: 'สมาชิก', selector: row => row.username, width: '175px' },
         { name: 'ผู้บันทึก', selector: row => row.uadmin, width: '175px' },
-        { name: 'วันที่บันทึก', selector: row => formatDateTime(row.w_datetime), width: '175px' },
+        { name: 'วันที่บันทึก', selector: row => formatDate(row.w_datetime), width: '175px' },
     ];
 
 

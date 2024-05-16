@@ -26,13 +26,13 @@ export default function Headers() {
                     <div className="collapse navbar-collapse" id="navbarCollapse">
                         <ul className="navbar-nav me-auto mb-2 mb-md-0">
                             <li className="nav-item">
-                                <Link className="nav-link" aria-current="page" href="/admin/rubberPriceReview">รายการขายยางประจำเดือน</Link>
+                                <Link className="nav-link" aria-current="page" href="/admin/rubberPriceReport">รายการขายยางประจำเดือน</Link>
                             </li>
                             <li className="nav-item">
                                 <Link className="nav-link" href="/admin/rubberPricehistory">ประวัติการขายยางพารา</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" href="/admin/shareapercentReview">รายงานปันผลประจำปี</Link>
+                                <Link className="nav-link" href="/admin/shareapercentReport">รายงานปันผลประจำปี</Link>
                             </li>
                             <li className="nav-item dropdown">
                                 <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
