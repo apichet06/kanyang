@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { api } from '../../utils/config'
 import axios from 'axios'
 import { formatDate, formatPrice } from '../../utils/allfunctions'
-import ComponentToPrint from '../components/ComponentToPrint'
+import ComponentToPrint from './ComponentToPrint'
 import { useReactToPrint } from 'react-to-print'
 
 export default function page() {

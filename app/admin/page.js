@@ -9,6 +9,7 @@ export default function ChartPage() {
     const chartData = {
         labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
         datasets: [{
+            type: 'bar',
             label: 'ยอดขายยางพารา',
             data: [12, 19, 3, 5, 2, 3],
             borderWidth: 1
