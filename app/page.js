@@ -30,7 +30,7 @@ export default function Home() {
         const decodedToken = decodeToken(token);
         if (decodedToken) {
           LoginAction(decodedToken.status)
-          setLoading(false);
+          // setLoading(false);
         }
 
       }

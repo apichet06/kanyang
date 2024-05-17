@@ -1,11 +1,13 @@
 'use client'
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState, useRef } from 'react';
 import DataTable from 'react-data-table-component';
 import axios from 'axios';
 import { api } from "../../utils/config";
 import { formatPrice, formatDate } from '../../utils/allfunctions';
 import Link from 'next/link';
 import Select from 'react-select';
+import ComponentToPrint from '../components/ComponentToPrint'
+import { useReactToPrint } from 'react-to-print'
 
 export default function page() {
 
@@ -26,6 +28,20 @@ export default function page() {
     const [u_number, setUnumber] = useState('');
     const [r_number, setRnumber] = useState('');
     const [users, setUsers] = useState([])
+
+    const [isPrinting, setIsPrinting] = useState(false);
+    const componentRef = useRef()
+    const handlePrint = useReactToPrint({
+        content: () => componentRef.current,
+        documentTitle: 'emp-data',
+        onBeforeGetContent: () => {
+            setIsPrinting(true); // เซ็ตสถานะเมื่อผู้ใช้กดปุ่ม "พิมพ์"
+        },
+        onAfterPrint: () => {
+            setIsPrinting(false); // เซ็ตสถานะเมื่อพิมพ์เสร็จสิ้น
+        }
+    })
+
 
     const showData = useCallback(async () => {
 
@@ -147,7 +163,7 @@ export default function page() {
                     </div>
                 </div>
                 <div className="row justify-content-center">
-                    <div className='col-md-12 mt-5'>
+                    <div className='col-md-12 mt-5 mb-5'>
                         <hr />
                         <div className='row'>
                             <div className='col-md-7'>
@@ -157,9 +173,9 @@ export default function page() {
                                 {(r_number || u_number) ?
                                     <>
                                         <button className='btn btn-sm btn-secondary' onClick={downloadExcelFile}>ส่งออก Excel</button>  {' '}
-                                        <Link href={`./printrubberprice?r_number=${r_number}&u_firstname=${u_number}`} target='_blank' className='btn btn-sm btn-dark'>พิมพ์เอกสาร</Link>
-
-                                    </> : <div className='text-danger'>Export Excel จำเป็นต้องค้นข้อมูลทุกครั้ง</div>
+                                        {/* <Link href={`./printrubberprice?r_number=${r_number}&u_firstname=${u_number}`} target='_blank' className='btn btn-sm btn-dark'>พิมพ์เอกสาร</Link> */}
+                                        <button className='btn btn-sm btn-dark' onClick={handlePrint} >พิมพ์เอกสาร</button>
+                                    </> : <strong className='text-danger'>ออกรายงาน Excel จำเป็นต้องค้นข้อมูลทุกครั้ง</strong>
                                 }
                             </div>
                         </div>
@@ -170,6 +186,9 @@ export default function page() {
                             pagination
                             progressPending={pending}
                         />
+                        <div style={{ display: 'none' }}>
+                            {isPrinting && <ComponentToPrint data={data} ref={componentRef} />}
+                        </div>
                     </div>
                 </div>
 

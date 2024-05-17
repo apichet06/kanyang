@@ -8,8 +8,6 @@ import { api } from "../../utils/config";
 import { formatPrice, isLeapYear } from '../../utils/allfunctions';
 
 
-
-
 export default function Datatable() {
 
     const [data, setData] = useState([]);
@@ -46,7 +44,6 @@ export default function Datatable() {
     const showData = useCallback(async () => {
 
         try {
-
 
             const Data = { year, u_username }
             const response = await axios.post(api + "/sharepercent/share", Data);
@@ -108,7 +105,7 @@ export default function Datatable() {
 
     return (
         <>
-            <div className="container-fluid">
+            <div className="container-fluid mb-5">
                 <div className="row justify-content-center">
                     <div className="col-auto mt-5">
                         <input className="form-control" list="percentYear" placeholder="ค้นหาปีปันผล..." onChange={e => setYear(e.target.value)} />

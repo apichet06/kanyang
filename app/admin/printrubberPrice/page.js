@@ -1,20 +1,35 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { api } from '../../utils/config'
 import axios from 'axios'
 import { formatDate, formatPrice } from '../../utils/allfunctions'
-
+import ComponentToPrint from '../components/ComponentToPrint'
+import { useReactToPrint } from 'react-to-print'
 
 export default function page() {
     const searchParams = useSearchParams()
     const r_number = searchParams.get('r_number')
     const u_firstname = searchParams.get('u_firstname')
     const [data, setData] = useState([]);
+    const [isPrinting, setIsPrinting] = useState(false);
+
+
+    const componentRef = useRef()
+    const handlePrint = useReactToPrint({
+        content: () => componentRef.current,
+        documentTitle: 'emp-data',
+        onBeforeGetContent: () => {
+            setIsPrinting(true); // เซ็ตสถานะเมื่อผู้ใช้กดปุ่ม "พิมพ์"
+        },
+        onAfterPrint: () => {
+            setIsPrinting(false); // เซ็ตสถานะเมื่อพิมพ์เสร็จสิ้น
+        }
+    })
+
 
     const showData = useCallback(async () => {
-
 
         const Data = { r_number, u_firstname }
         const response = await axios.post(api + "/weightprice/weight", Data);
@@ -49,11 +64,9 @@ export default function page() {
         <div className="container">
             <div className="row justify-content-center">
                 <div className='col-md-12 mt-5 mb-2 text-end'>
-                    <button className='btn btn-sm btn-dark'>พิมพ์</button>
-
+                    <button className='btn btn-sm btn-dark' onClick={handlePrint} >พิมพ์</button>
                 </div>
-                <div className="col-md-12 mb-5">
-
+                <div className="col-md-12 mb-5"  >
                     {data.map((item, index) => (<>
                         <hr key={index} />
                         <div className='fs-5 fw-bolder'>ชื่อ : {item.username}</div>
@@ -61,9 +74,10 @@ export default function page() {
                         <div>วันที่ขาย : {formatDate(item.r_rubber_date)} รอบขายประจำเดือน : รอบที่ {item.r_around}</div>
                         <div className='fs-5'>ราคาประมูล : {formatPrice(item.r_rubber_price)} น้ำหนักรวม : {item.w_weigth} กิโลกรัม </div>
                         <h3 className='fw-bold'>รวมเป็นเงิน : {formatPrice(item.w_price)} </h3>
-
                     </>))}
-
+                </div>
+                <div style={{ display: 'none' }}>
+                    {isPrinting && <ComponentToPrint data={data} ref={componentRef} />}
                 </div>
             </div>
         </div>

@@ -6,7 +6,7 @@ export default function Users() {
         <>
             <div className="container">
                 <div className="row">
-                    <div className='col-md-12 mt-5'>
+                    <div className='col-md-12 mt-5 mb-5'>
                         <div className='row justify-content-center'>
                             <Datatable />
                         </div>

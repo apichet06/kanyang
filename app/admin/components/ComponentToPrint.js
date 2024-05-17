@@ -1,35 +1,20 @@
 'use client'
-import React from 'react';
 
-const ComponentToPrint = React.forwardRef((props, ref) => (
+import React, { forwardRef } from 'react';
+import { formatDate, formatPrice } from '../../utils/allfunctions';
+
+const ComponentToPrint = forwardRef(({ data }, ref) => (
     <div ref={ref}>
-        <table>
-            <thead>
-                <tr>
-                    <th>column 1</th>
-                    <th>column 2</th>
-                    <th>column 3</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>data 1</td>
-                    <td>data 2</td>
-                    <td>data 3</td>
-                </tr>
-                <tr>
-                    <td>data 1</td>
-                    <td>data 2</td>
-                    <td>data 3</td>
-                </tr>
-                <tr>
-                    <td>data 1</td>
-                    <td>data 2</td>
-                    <td>data 3</td>
-                </tr>
-            </tbody>
-        </table>
+        {data.map((row, index) => (<>
+            <hr key={index} />
+            <div className='fs-5 fw-bolder'>ชื่อ : {row.username}</div>
+            <div>ที่อยู่ : {row.Address}</div>
+            <div>วันที่ขาย : {formatDate(row.r_rubber_date)} รอบขายประจำเดือน : รอบที่ {row.r_around}</div>
+            <div className='fs-5'>ราคาประมูล : {formatPrice(row.r_rubber_price)} น้ำหนักรวม : {row.w_weigth} กิโลกรัม </div>
+            <h3 className='fw-bold'>รวมเป็นเงิน : {formatPrice(row.w_price)} </h3>
+        </>))}
     </div>
+
 ));
 
 export default ComponentToPrint;
