@@ -6,7 +6,7 @@ import { api } from "../../utils/config";
 import { formatPrice, formatDate } from '../../utils/allfunctions';
 import Link from 'next/link';
 import Select from 'react-select';
-import ComponentToPrint from '../printrubberprice/ComponentToPrint'
+import ComponentToPrint from './ComponentToPrint'
 import { useReactToPrint } from 'react-to-print'
 
 export default function page() {
