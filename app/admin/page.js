@@ -1,71 +1,86 @@
 'use client'
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import Chart from 'chart.js/auto';
-import { api } from '../utils/config';
 import axios from 'axios';
+import { api } from '../utils/config';
 
 
 export default function ChartPage() {
-
-    const [labal, setLabel] = useState([])
+    const [chartData, setChartData] = useState({
+        labels: [],
+        datasets: []
+    });
 
     const fetchData = useCallback(async () => {
         try {
-            const response = await axios.get(api + '/rubberprice/data/chart');
+            const response = await axios.get(api + '/rubberprice/data/chart'); // Adjust the API endpoint if needed
             const data = response.data.data;
-            console.log(data);
+
+            // Sort data by month number
             const sortedData = data.sort((a, b) => parseInt(a.m_number) - parseInt(b.m_number));
 
+            // Extract labels (month names)
             const labels = sortedData.map(month => month.m_name);
-            setLabel(labels)
 
-            const prices = sortedData.map(month =>
-                month.data.map(entry => parseFloat(entry.r_rubber_price))
-            );
+            let maxRounds = 0;
+            sortedData.forEach(month => {
+                const maxRoundInMonth = month.data.reduce((max, entry) => Math.max(max, parseInt(entry.r_around)), 0);
+                maxRounds = Math.max(maxRounds, maxRoundInMonth);
+            });
 
-            const datasets = prices.map((priceArr, index) => ({
-                label: labels[index],
-                data: priceArr,
-                borderWidth: 1
-            }));
+            const getRandomColor = () => {
+                const letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            };
+            // Find the maximum r_around value
+            const datasets = [];
+            for (let round = 1; round <= maxRounds; round++) {
+                const backgroundColor = getRandomColor();
+                const borderColor = backgroundColor;
+                datasets.push({
+                    label: `ราคาประมูล รอบที่ ${round}`,
+                    backgroundColor: backgroundColor + '95', // Adding transparency
+                    borderColor: borderColor,
+                    borderWidth: 1,
+                    data: sortedData.map(month => {
+                        const entry = month.data.find(d => parseInt(d.r_around) === round);
+                        return entry ? parseFloat(entry.r_rubber_price) : '';
+                    })
+                });
+            }
+
+            // การใช้ datasets.push({}) เป็นการเพิ่มวัตถุ (object) ใหม่เข้าไปในอาร์เรย์ datasets โดย datasets เป็นอาร์เรย์ที่ใช้เก็บข้อมูลชุดต่างๆ ที่จะนำไปใช้ในการแสดงกราฟ
+            // ตัวอย่าง
+            // {
+            //   label: "ราคาประมูล รอบที่ 1",
+            //   backgroundColor: "rgba(54, 162, 235, 0.6)",
+            //   borderColor: "rgba(54, 162, 235, 1)",
+            //   borderWidth: 1,
+            //   data: [0, 0, 0, 42.00, 33.00, 0, 0, 23.00, 0, 0, 0, 0]
+            // }
 
 
-
+            setChartData({
+                labels,
+                datasets
+            });
 
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     }, [api]);
 
-
     useEffect(() => {
-        fetchData()
-
+        fetchData();
     }, [fetchData]);
 
 
-
-
-
-    const chartData = {
-        // labels: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'],
-        labels: labal,
-        datasets: [{
-            label: 'r_rubber_date',
-            data: ['', '', '', '', '33', '', '', '', '', '', '', ''],
-            borderWidth: 1
-        }, {
-            label: 'r_rubber_date',
-            data: ['', '', '', '', '36', '', '', '', '', '', '', '10'],
-            borderWidth: 1
-        }, {
-            label: 'r_rubber_date',
-            data: ['', '', '', '', '41', '', '', '7', '', '', '', '11'],
-            borderWidth: 1
-        }]
-    };
 
     const chartOptions = {
         scales: {
@@ -78,14 +93,10 @@ export default function ChartPage() {
             datalabels: {
                 anchor: 'end',
                 align: 'top',
-                formatter: (value, context) => {
-                    return value;
-                    // return context.chart.data.labels[context.dataIndex] + ': ' + value;
-                }
+                formatter: (value) => value > 0 ? '฿' + value : ''
             }
         }
     };
-
 
     return (
         <div className="container">
