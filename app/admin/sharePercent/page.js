@@ -6,8 +6,8 @@ export default function Share() {
         <>
             <div className="container">
                 <div className="row ">
-                    <div className='col-md-12 mt-5'>
-                        <div className='row justify-content-center'>
+                    <div className='col-md-12 mt-5 '>
+                        <div className='row justify-content-center '>
                             <Datatable />
                         </div>
                     </div>

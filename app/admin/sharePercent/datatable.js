@@ -141,11 +141,11 @@ export default function datatable() {
     return (
         <>
             <div className='col-md-7 text-end mb-3'>
-                <form >
+                <form onSubmit={(e) => handleSubmit(e)}>
                     <div className="mb-3 row">
                         <label className="col-sm-3 col-form-label">ปีปันผลหุ้น</label>
                         <div className="col-sm-6">
-                            <select className="form-select" value={s_year} name="s_year" onChange={(e) => setSyear(e.target.value)}>
+                            <select className="form-select" value={s_year} name="s_year" onChange={(e) => setSyear(e.target.value)} required>
                                 <option value="">เลือกปี</option>
                                 {Array.from({ length: 4 }, (_, index) => {
                                     const year = new Date().getFullYear() - 2 + index;
@@ -157,19 +157,19 @@ export default function datatable() {
                     <div className="mb-3 row">
                         <label className="col-sm-3 col-form-label">แบ่งเปอร์เซ็นหุ้น</label>
                         <div className="col-sm-6">
-                            <input type="number" className="form-control" value={s_percent} name="s_percent" onChange={(e) => setSpercent(e.target.value)} />
+                            <input type="number" className="form-control" value={s_percent} name="s_percent" onChange={(e) => setSpercent(e.target.value)} required />
                         </div>
                     </div>
                     <div className="mb-3 row">
                         <label className="col-sm-3 col-form-label">แบ่งเปอร์เซ็นหัวตัน</label>
                         <div className="col-sm-6">
-                            <input type="number" className="form-control" value={s_huatun} name="s_huatun" onChange={(e) => setShuatun(e.target.value)} />
+                            <input type="number" className="form-control" value={s_huatun} name="s_huatun" onChange={(e) => setShuatun(e.target.value)} required />
                         </div>
                     </div>
                     <div className="mb-3 row">
                         <label className="col-sm-3 col-form-label"> </label>
                         <div className="col-sm-6 text-center">
-                            <button type="submit" className='btn btn-primary' onClick={(e) => handleSubmit(e)}>{editID ? 'แก้ไข' : 'เพิ่ม'}</button> &nbsp;
+                            <button type="submit" className='btn btn-primary' >{editID ? 'แก้ไข' : 'เพิ่ม'}</button> &nbsp;
                             {editID && <button type="submit" className='btn btn-info' onClick={handleReset}>คืนค่า</button>}
                         </div>
                     </div>
@@ -178,9 +178,9 @@ export default function datatable() {
                 <hr />
             </div >
 
-            <div className="col-md-7">
+            <div className="col-md-7 mb-5">
                 <div className="card">
-                    <div className="card-body">
+                    <div className="card-body mb-5">
                         <DataTable
                             title="ข้อมูลเปอร์เซ็นปันผลหุ้น/หัวตันประจำปี"
                             columns={columns}
