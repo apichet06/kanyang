@@ -105,7 +105,7 @@ export default function ChartPage() {
                     <div className="card">
                         <div className="card-body">
                             <h2>ราคาประมูลยางพารา</h2>
-                            <Bar data={chartData} options={chartOptions} plugins={[ChartDataLabels]} height="70%" />
+                            <Bar data={chartData} options={chartOptions} plugins={[ChartDataLabels]} height="90%" />
                         </div>
                     </div>
                 </div>
