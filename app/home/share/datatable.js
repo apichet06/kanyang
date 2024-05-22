@@ -33,13 +33,8 @@ export default function Datatable() {
         { name: 'เงินปันผลรวม', selector: row => formatPrice(row.sumPrice) },
     ];
 
-
-
-
     const showData = useCallback(async () => {
-        console.log('====================================');
-        console.log(userId);
-        console.log('====================================');
+
         const Data = { year: '', u_username: userId }
         const response = await axios.post(api + "/sharepercent/share", Data);
 

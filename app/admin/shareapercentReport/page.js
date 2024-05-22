@@ -6,6 +6,7 @@ import DataTable from 'react-data-table-component';
 import axios from 'axios';
 import { api } from "../../utils/config";
 import { formatPrice, isLeapYear } from '../../utils/allfunctions';
+import Swal from 'sweetalert2';
 
 
 export default function Datatable() {
@@ -40,6 +41,45 @@ export default function Datatable() {
             throw error
         }
     }, [api])
+
+
+
+    const handleUpdateShareYear = useCallback(async () => {
+        try {
+            let timerInterval;
+            let count = 1;
+
+            Swal.fire({
+                title: "อัปเดตหุ้นประจำปี...",
+                html: "เวลาประมวลผล: <b></b>",
+                didOpen: () => {
+                    Swal.showLoading();
+                    const progress = Swal.getPopup().querySelector("b");
+                    progress.textContent = count; // แสดงความคืบหน้าเริ่มต้นที่ 0%
+                    timerInterval = setInterval(() => {
+                        count++;
+                        progress.textContent = count; // อัพเดทความคืบหน้าเรื่อย ๆ
+                    }, 100); // เพิ่มค่าทุกๆ 1 วินาที
+                },
+                willClose: () => {
+                    clearInterval((timerInterval));
+                },
+                allowOutsideClick: false, // ไม่อนุญาตให้คลิกนอกกล่องเพื่อปิด
+                allowEscapeKey: false,    // ไม่อนุญาตให้กดปุ่ม Escape เพื่อปิด
+                allowEnterKey: false      // ไม่อนุญาตให้กดปุ่ม Enter เพื่อปิด
+            });
+
+            const response = await axios.get(api + "/sharepercent/UdateshareYear", {
+                onDownloadProgress: (progressEvent) => { }
+            });
+            if (response.status === 200) {
+                Swal.close(); // ปิด SweetAlert เมื่อได้รับการตอบกลับที่มีสถานะเป็น 200
+            }
+
+        } catch (error) {
+            throw error;
+        }
+    }, [api]);
 
     const showData = useCallback(async () => {
 
@@ -129,9 +169,13 @@ export default function Datatable() {
                         <div className='row'>
                             <div className='col-md-8'>
                                 <h4>รายงานเงินปันผลประจำปี {yearStart + ' ถึง ' + yearEnd}</h4>
+                                <straon>
+                                    <b className='text-danger'>แจ้งเตือน</b>: กรณีไม่พบข้อมูลการปันผล แสดงว่าข้อมูลหุ้นปีนั้นๆ ไม่ถูกอัปเดต <b className='text-danger'><u>จำเป็นต้องกดปุ่ม "อัปเดตหุ้นประจำปี"</u></b> หรือสมาชิกเพิ่มหุ้นหรือถอนหุ้น <b className='text-danger'><u>จำเป็นต้องกดปุ่ม "อัปเดตหุ้นประจำปี"</u></b> เช่นกัน
+                                </straon>
                             </div>
                             <div className='col-md-4 text-end'>
-                                <button className='btn btn-sm btn-secondary' onClick={downloadExcelFile}>Export Excel</button>
+                                <button className='btn btn-sm btn-warning' onClick={handleUpdateShareYear}>อัปเดตหุ้นประจำปี</button>{' '}
+                                <button className='btn btn-sm btn-secondary' onClick={downloadExcelFile}>ออกรายงาน Excel</button>
                             </div>
                         </div>
                         <hr />

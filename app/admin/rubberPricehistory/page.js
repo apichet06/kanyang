@@ -128,7 +128,7 @@ export default function page() {
                                 <h4>ประวัติการขายยางพาราทั้งหมด  {dateSearch.length > 0 ? 'ประจำรอบ ' + formatDate(dateSearch[0].r_rubber_date) : ''}</h4>
                             </div>
                             <div className='col-md-5 text-end'>
-                                <button className='btn btn-sm btn-secondary' onClick={downloadExcelFile}>Export Excel</button>
+                                <button className='btn btn-sm btn-secondary' onClick={downloadExcelFile}>ออกรายงาน Excel</button>
                             </div>
                         </div>
                         <hr />

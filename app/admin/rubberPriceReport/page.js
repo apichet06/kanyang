@@ -172,7 +172,7 @@ export default function page() {
                             <div className='col-md-5 text-end'>
                                 {(r_number || u_number) ?
                                     <>
-                                        <button className='btn btn-sm btn-secondary' onClick={downloadExcelFile}>ส่งออก Excel</button>  {' '}
+                                        <button className='btn btn-sm btn-secondary' onClick={downloadExcelFile}>ออกรายงาน Excel</button>  {' '}
                                         {/* <Link href={`./printrubberprice?r_number=${r_number}&u_firstname=${u_number}`} target='_blank' className='btn btn-sm btn-dark'>พิมพ์เอกสาร</Link> */}
                                         <button className='btn btn-sm btn-dark' onClick={handlePrint} >พิมพ์เอกสาร</button>
                                     </> : <strong className='text-danger'>ออกรายงาน Excel จำเป็นต้องค้นข้อมูลทุกครั้ง</strong>
