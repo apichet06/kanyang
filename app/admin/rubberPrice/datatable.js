@@ -16,9 +16,9 @@ export default function datatable() {
 
     const columns = [
         { name: 'ID', selector: row => row.autoID, width: '80px' },
-        { name: 'รอบขายยางพารา', selector: row => row.r_around, width: '120px' },
+        { name: 'รอบขาย', selector: row => row.r_around, width: '100px' },
         { name: 'วันขาย', selector: row => formatDate(row.r_rubber_date), width: '130px' },
-        { name: 'ราคาประมูลยางพารา', selector: row => formatPrice(row.r_rubber_price), width: '130px' },
+        { name: 'ราคาประมูลยางพารา', selector: row => formatPrice(row.r_rubber_price), width: '150px' },
         { name: 'ผู้บันทึก', selector: row => row.username, width: '190px' },
         {
             name: "จัดการ",
@@ -146,22 +146,22 @@ export default function datatable() {
     return (
         <>
 
-            <div className='col-md-9 text-end mb-3'>
+            <div className='col-md-7 text-end mb-3'>
                 <form onSubmit={(e) => handleSubmit(e)}>
                     <div className="mb-3 row">
-                        <label className="col-sm-2 col-form-label">ราคาประมูลยางพารา</label>
+                        <label className="col-sm-3 col-form-label">ราคาประมูลยางพารา</label>
                         <div className="col-sm-6">
                             <input type="text" className="form-control" value={r_rubber_price} name="r_rubber_price" placeholder='ราคาประมูลยางพารา' onChange={(e) => setRrubberPrice(e.target.value)} required />
                         </div>
                     </div>
                     <div className="mb-3 row">
-                        <label className="col-sm-2 col-form-label">วันที่ขาย</label>
+                        <label className="col-sm-3 col-form-label">วันที่ขาย</label>
                         <div className="col-sm-6">
                             <input type="date" className="form-control" value={r_rubber_date} name="r_rubber_date" onChange={(e) => setRrubberDate(e.target.value)} required />
                         </div>
                     </div>
                     <div className="mb-3 row">
-                        <label className="col-sm-2 col-form-label"> </label>
+                        <label className="col-sm-3 col-form-label"> </label>
                         <div className="col-sm-6 text-center">
                             <button type="submit" className='btn btn-primary'>{editID ? 'แก้ไข' : 'เพิ่ม'}</button> &nbsp;
                             {editID && <button type="submit" className='btn btn-info' onClick={handleReset}>คืนค่า</button>}
@@ -171,7 +171,7 @@ export default function datatable() {
 
                 <hr />
             </div>
-            <div className="col-md-9">
+            <div className="col-md-8">
                 <div className="card">
                     <div className="card-body">
                         <DataTable
