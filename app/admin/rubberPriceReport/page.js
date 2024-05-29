@@ -15,7 +15,7 @@ export default function page() {
         { name: 'ID', selector: row => row.w_number, width: '130px' },
         { name: 'งวด-ปี/เดือน/วัน', selector: row => row.r_around + '-' + formatDate(row.r_rubber_date), width: '150px' },
         { name: 'น้ำหนักรวม', selector: row => Number(row.w_weigth).toLocaleString() },
-        { name: 'ราคาประมูล', selector: row => formatPrice(row.r_rubber_price) },
+        { name: 'ราคาประมูลยางพารา', selector: row => formatPrice(row.r_rubber_price) },
         { name: 'จำนวนเงิน', selector: row => formatPrice(row.w_price) },
         { name: 'สมาชิก', selector: row => row.username, width: '220px' },
         { name: 'ผู้บันทึก', selector: row => row.uadmin, width: '175px' },

@@ -22,7 +22,7 @@ export default function datatable() {
         { name: 'เลขหุ้น', selector: row => row.u_share_id, width: '110px' },
         { name: 'สามชิก', selector: row => row.username, width: '175px' },
         { name: 'รอบขายยางพารา', selector: row => row.r_around, width: '120px' },
-        { name: 'ราคาขายยางพารา', selector: row => formatPrice(row.r_rubber_price) },
+        { name: 'ราคาประมูลยางพารา', selector: row => formatPrice(row.r_rubber_price) },
         { name: 'น้ำหนัก/กิโลกรัม', selector: row => Number(row.w_weigth).toFixed(2).toLocaleString() },
         { name: 'จำนวนเงิน', selector: row => formatPrice(row.w_price) },
         { name: 'วันขาย', selector: row => formatDate(row.r_rubber_date), width: '110px' },
@@ -305,8 +305,9 @@ export default function datatable() {
                     <div className="col-md-11 mb-5">
                         <div className="card">
                             <div className="card-body">
+                                <h3>รายการน้ำหนักยางพาราของสมาชิกที่บันทึกแล้ว</h3>
+                                <strong className='text-danger '>***การบันทึกน้ำหนักสามารถกรอกได้ 1 คนต่อ 1 รอบการขายไม่สามารถกรอกข้อมูลการขายซ้ำได้ กรณีกรอกน้ำหนักผิดพลาดสามารถแก้ไขข้อมูลได้ตามรายชื่อสามาชิกด่านล่าง</strong>
                                 <DataTable
-                                    title="น้ำหนักยางพารา/ราคาขาย"
                                     columns={columns}
                                     data={data}
                                     pagination
@@ -314,7 +315,6 @@ export default function datatable() {
                                 />
                             </div>
                         </div>
-                        <strong className='text-danger '>***การจัดการข้อมูลการบันทึกน้ำหนักสามารถกรอกได้ 1 คนต่อ 1 รอบการขายไม่สามารถกรอกข้อมูลการขายซ้ำได้</strong>
                     </div>
                 </div>
             </div>

@@ -181,8 +181,10 @@ export default function datatable() {
             <div className="col-md-7 mb-5">
                 <div className="card">
                     <div className="card-body mb-5">
+                        <h3>ข้อมูลเปอร์เซ็นปันผลหุ้น/หัวตันประจำปี</h3>
+                        <strong className='text-danger'>***การจัดการข้อมูลการเปอร์เซ็นต์ปันผลหุ้น/เปอร์เซ็นต์หัวตันในแต่ละปี</strong>
                         <DataTable
-                            title="ข้อมูลเปอร์เซ็นปันผลหุ้น/หัวตันประจำปี"
+                            title=""
                             columns={columns}
                             data={data}
                             pagination
@@ -191,7 +193,7 @@ export default function datatable() {
                     </div>
                 </div>
                 <hr />
-                <strong className='text-danger'>***การจัดการข้อมูลการเปอร์เซ็นต์ปันผลหุ้น/เปอร์เซ็นต์หัวตันในแต่ละปี</strong>
+
             </div>
         </>
 

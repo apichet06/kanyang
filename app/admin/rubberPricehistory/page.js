@@ -13,7 +13,7 @@ export default function page() {
         { name: 'ปี/เดือน/วัน', selector: row => formatDate(row.r_rubber_date) },
         { name: 'รอบขาย', selector: row => row.r_around },
         { name: 'น้ำหนัก', selector: row => Number(row.w_weigth).toLocaleString() },
-        { name: 'ราคาขาย', selector: row => formatPrice(row.r_rubber_price) },
+        { name: 'ราคาประมูลยางพารา', selector: row => formatPrice(row.r_rubber_price) },
         { name: 'จำนวนเงิน', selector: row => formatPrice(row.w_price) },
         { name: 'สมาชิก', selector: row => row.username, width: '175px' },
         { name: 'ผู้บันทึก', selector: row => row.uadmin, width: '175px' },

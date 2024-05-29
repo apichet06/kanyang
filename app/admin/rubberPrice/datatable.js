@@ -174,8 +174,10 @@ export default function datatable() {
             <div className="col-md-8">
                 <div className="card">
                     <div className="card-body">
+                        <h3>ข้อมูลราคายางพารา</h3>
+                        <strong className='text-danger'>***การเพิ่มข้อมูลราคาประมูลยางพารา ระบุวันที่ต้องการขายยางพาราและราคาที่ประมูลได้ในการประมูล</strong>
                         <DataTable
-                            title="ข้อมูลราคายางพารา"
+                            title=""
                             columns={columns}
                             data={data}
                             pagination
@@ -184,7 +186,6 @@ export default function datatable() {
                     </div>
                 </div>
                 <hr />
-                <strong className='text-danger'>***การจัดการข้อมูลราคายางพารา ระบุวันที่ต้องการขายยางพารา</strong>
             </div>
 
         </>
