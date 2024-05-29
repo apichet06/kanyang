@@ -314,7 +314,7 @@ export default function datatable() {
                                 />
                             </div>
                         </div>
-                        <strong className='text-danger '>การจัดการข้อมูลการบันทึกน้ำหนักสามารถกรอกได้ 1 คนต่อ 1 รอบการขายไม่สามารถกรอกข้อมูลการขายซ้ำได้</strong>
+                        <strong className='text-danger '>***การจัดการข้อมูลการบันทึกน้ำหนักสามารถกรอกได้ 1 คนต่อ 1 รอบการขายไม่สามารถกรอกข้อมูลการขายซ้ำได้</strong>
                     </div>
                 </div>
             </div>

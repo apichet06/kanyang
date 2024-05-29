@@ -201,8 +201,10 @@ export default function datatable() {
             <div className="col-md-12">
                 <div className="card">
                     <div className="card-body">
+                        <h3>ข้อมูลสมาชิก</h3>
+                        <strong className='text-danger'>*** กรณีต้องการให้มีข้อมูลสามาชิกแต่ไม่มีหุ้น สามารถเพิ่มรายชื่อได้ แต่เลขหุ้นให้กรอกเป็น 0 หุ้น</strong>
                         <DataTable
-                            title="ข้อมูลสมาชิก"
+
                             columns={columns}
                             data={data}
                             pagination

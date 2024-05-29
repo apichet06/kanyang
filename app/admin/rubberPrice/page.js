@@ -14,7 +14,6 @@ export default function RubberPrice() {
                     </div>
                 </div>
             </div>
-
         </>
     )
 }

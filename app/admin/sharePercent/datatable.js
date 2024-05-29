@@ -191,7 +191,7 @@ export default function datatable() {
                     </div>
                 </div>
                 <hr />
-                <strong className='text-danger'>การจัดการข้อมูลการเปอร์เซ็นต์ปันผลหุ้น/เปอร์เซ็นต์หัวตัน</strong>
+                <strong className='text-danger'>***การจัดการข้อมูลการเปอร์เซ็นต์ปันผลหุ้น/เปอร์เซ็นต์หัวตันในแต่ละปี</strong>
             </div>
         </>
 

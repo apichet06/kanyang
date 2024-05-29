@@ -159,7 +159,7 @@ export default function Modal(props) {
                                 </div>
                                 <div className='col-md-4'>
                                     <label className="col-form-label">อำเภอ</label>
-                                    <select className="form-select" name='districts_id' value={userData.districts_id} onChange={handleSubDistrictChanges} >
+                                    <select className="form-select" name='districts_id' value={userData.districts_id} onChange={handleSubDistrictChanges} required>
                                         <option value=''>เลือกอำเภอ</option>
                                         {districts.map(districts => (
                                             <option key={districts.id} value={districts.id}>{districts.name_in_thai}</option>
@@ -168,7 +168,7 @@ export default function Modal(props) {
                                 </div>
                                 <div className='col-md-4'>
                                     <label className="col-form-label">ตำบล</label>
-                                    <select className="form-select" name='subdistricts_id' value={userData.subdistricts_id} onChange={handleInputChange} >
+                                    <select className="form-select" name='subdistricts_id' value={userData.subdistricts_id} onChange={handleInputChange} required>
                                         <option value=''>เลือกตำบล</option>
                                         {subdistricts.map(subdistricts => (
                                             <option key={subdistricts.id} value={subdistricts.id}>{subdistricts.name_in_thai}</option>
@@ -177,11 +177,11 @@ export default function Modal(props) {
                                 </div>
                                 <div className="col-md-4">
                                     <label className="col-form-label">จำนวนหุ้น</label>
-                                    <input type="number" className="form-control" name="u_share" value={userData.u_share} placeholder='เช่น 1000' onChange={handleInputChange} />
+                                    <input type="number" className="form-control" name="u_share" value={userData.u_share} placeholder='เช่น 1000' onChange={handleInputChange} required />
                                 </div>
                                 <div className="mb-3 col-md-4">
                                     <label className="col-form-label">สถานะ</label>
-                                    <select className="form-select" name='u_status' value={userData.u_status} onChange={handleInputChange} >
+                                    <select className="form-select" name='u_status' value={userData.u_status} onChange={handleInputChange} required>
                                         <option value="">สถานะ</option>
                                         <option value="admin">ผู้ดูแลระบบ</option>
                                         <option value="user">ผู้ใช้งานทั้วไป</option>

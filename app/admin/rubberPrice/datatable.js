@@ -184,7 +184,7 @@ export default function datatable() {
                     </div>
                 </div>
                 <hr />
-                <strong className='text-danger'>การจัดการข้อมูลราคายางพารา ระบุวันที่ต้องการขายยางพารา</strong>
+                <strong className='text-danger'>***การจัดการข้อมูลราคายางพารา ระบุวันที่ต้องการขายยางพารา</strong>
             </div>
 
         </>

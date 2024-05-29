@@ -186,12 +186,12 @@ export default function page() {
                             pagination
                             progressPending={pending}
                         />
+                        <strong className='text-danger '>***การออกรายงานประจำเดือนจะค้นหาได้เฉพาะเดือนปัจจุบันเท่านั้นหากต้องการดูเดือนอื่นๆ สามารถเขาดูได้ที่ เมนู "ประวัติการขายยางพารา"</strong>
                         <div style={{ display: 'none' }}>
                             {isPrinting && <ComponentToPrint data={data} ref={componentRef} />}
                         </div>
                     </div>
                 </div>
-
             </div>
         </>
     )
