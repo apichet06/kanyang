@@ -18,7 +18,7 @@ export default function datatable() {
         { name: 'ID', selector: row => row.autoID, width: '80px' },
         { name: 'รอบขายยางพารา', selector: row => row.r_around, width: '120px' },
         { name: 'วันขาย', selector: row => formatDate(row.r_rubber_date), width: '130px' },
-        { name: 'ราคาขายยางพารา', selector: row => formatPrice(row.r_rubber_price), width: '130px' },
+        { name: 'ราคาประมูลได้', selector: row => formatPrice(row.r_rubber_price), width: '130px' },
         { name: 'ผู้บันทึก', selector: row => row.username, width: '190px' },
         {
             name: "จัดการ",
