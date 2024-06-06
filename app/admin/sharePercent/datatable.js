@@ -22,7 +22,7 @@ export default function datatable() {
                     &nbsp;
                     <button onClick={() => handleDelete(row.id)} className="btn btn-danger btn-sm">ลบ</button>
                 </>
-            ), center: true
+            ), center: 'true'
         },
     ];
 

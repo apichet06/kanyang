@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation'
 
 export default function Headers() {
-    const token = cookies().get('token').value;
+    const token = cookies().get('token')?.value;
     const decoded = decodeToken(token);
 
     async function createInvoice() {
@@ -50,7 +50,7 @@ export default function Headers() {
                         <form className="d-flex" action={createInvoice} >
                             <ul className="navbar-nav me-auto mb-1 mb-md-0">
                                 <li className="nav-item">
-                                    <Link className="nav-link active" aria-current="page" href="#">{decoded.username}</Link>
+                                    <Link className="nav-link active" aria-current="page" href="#">{decoded?.username}</Link>
                                 </li>
                                 <li className="nav-item">
                                     <button className="nav-link" type="submit">ออกจากระบบ</button>

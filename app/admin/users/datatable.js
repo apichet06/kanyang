@@ -7,9 +7,10 @@ import { api } from "../../utils/config";
 import Swal from 'sweetalert2';
 import { showErrorAlert, showSuccessAlert } from '../../utils/alertUtils';
 import { decodeToken } from '../../utils/decodeToken';
-import Cookie from 'js-cookie'
+import Cookie from 'js-cookie';
+import Select from 'react-select';
 
-export default function datatable() {
+export default function Datatable() {
 
     const token = Cookie.get('token');
     const userId = decodeToken(token)?.userId;
@@ -17,7 +18,10 @@ export default function datatable() {
     const [data, setData] = useState([]);
     const [pending, setPending] = useState(true);
     const [editID, setEditID] = useState('');
-    const [showModal, setshowModal] = useState(false)
+    const [showModal, setShowModal] = useState(false);
+    const [users, setUsers] = useState([])
+    const [u_number, setUnumber] = useState('');
+
 
     const [userData, setUserData] = useState({
         u_title: '',
@@ -31,12 +35,10 @@ export default function datatable() {
         u_status: ''
     });
 
-
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setUserData({ ...userData, [name]: value });
     };
-
 
     const columns = [
         { name: 'ลำดับ', selector: row => row.autoID, width: '65px' },
@@ -54,49 +56,74 @@ export default function datatable() {
                     &nbsp;
                     <button onClick={() => handleDelete(row.u_number)} className="btn btn-danger btn-sm">ลบ</button>
                 </>
-            ), center: true, width: '130px'
+            ), center: 'true', width: '130px'
         },
     ];
 
     const fetchData = useCallback(async () => {
+        try {
+            const response = await axios.get(api + "/users");
+            if (response.status === 200) {
+                let newData = response.data.data.map((item, index) => ({
+                    ...item, autoID: index + 1
+                }))
 
-        const response = await axios.get(api + "/users");
+                if (u_number)
+                    newData = newData.filter(item => item.u_number === u_number);
 
-        if (response.status === 200) {
-            const newData = await response.data.data.map((item, index) => ({
-                ...item, autoID: index + 1
-            }))
-            setData(newData);
-            setPending(false);
-        } else {
-            throw new Error("ไม่พบข้อมูล");
+                setData(newData);
+                setPending(false);
+            } else {
+                throw new Error("ไม่พบข้อมูล");
+            }
+        } catch (error) {
+            console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
         }
+    }, [api, u_number]);
 
-    }, [api])
+    const usersData = useCallback(async () => {
+
+        try {
+            const response = await axios.get(api + "/users");
+            if (response.status === 200) {
+                const users = [{ value: '', label: '--- เลือกสมาชิก ---' }, ...response.data.data.map(item => ({
+                    value: item.u_number,
+                    label: item.u_share_id + ' - ' + item.username
+                }))];
+                setUsers(users);
+            }
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        }
+    }, [api]);
+
+    const ChangeUsers = (e) => {
+        setUnumber(e ? e.value : '');
+    };
+
 
     const handleEdit = async (id) => {
         try {
-            setEditID(id)
-            setshowModal(true)
-            const Data = await data.find(data => data.u_number === id);
+            setEditID(id);
+            setShowModal(true);
+            const Data = data.find(data => data.u_number === id);
             if (Data) {
                 setUserData({
                     u_title: Data.u_title,
                     u_firstname: Data.u_firstname,
                     u_lastname: Data.u_lastname,
                     u_address: Data.u_address,
-                    provinces_id: Data.provinces_id,
-                    districts_id: Data.districts_id,
-                    subdistricts_id: Data.subdistricts_id,
+                    provinces_id: Data.id_prov,
+                    districts_id: Data.id_dis,
+                    subdistricts_id: Data.id_subdis,
                     u_share: Data.u_share,
                     u_status: Data.u_status
                 });
             }
-
         } catch (error) {
             console.log(error);
         }
-    }
+    };
 
     const handleDelete = async (id) => {
         try {
@@ -109,7 +136,6 @@ export default function datatable() {
                 confirmButtonText: 'ลบ!'
             }).then(async (result) => {
                 if (result.isConfirmed) {
-
                     try {
                         const response = await axios.delete(`${api}/users/${id}`, {
                             headers: { 'Content-Type': 'application/json' },
@@ -117,31 +143,28 @@ export default function datatable() {
 
                         if (response.status === 200) {
                             console.log(response.data);
-                            await showSuccessAlert(response.data.message)
+                            await showSuccessAlert(response.data.message);
                             // รีเฟรชข้อมูลหลังจากลบ
                             await fetchData();
                         }
                     } catch (error) {
                         console.error("เกิดข้อผิดพลาดในการลบข้อมูล:", error);
-                        showErrorAlert(error.response.data.message)
+                        showErrorAlert(error.response.data.message);
                     }
                 }
             });
         } catch (error) {
             console.log(error);
         }
-    }
-
+    };
 
     const handleSubmit = useCallback(async (e) => {
         e.preventDefault();
         try {
-
-            const apiUrl = editID ? `${api}/users/${editID}` : `${api}/users`
+            const apiUrl = editID ? `${api}/users/${editID}` : `${api}/users`;
             const response = await (editID ? axios.put(apiUrl, userData) : axios.post(apiUrl, userData));
 
             if (response.status === 200) {
-
                 showSuccessAlert(response.data.message);
                 fetchData();
                 setUserData({
@@ -155,25 +178,23 @@ export default function datatable() {
                     u_share: '',
                     u_status: ''
                 });
-                setshowModal(false)
-
+                setShowModal(false);
             }
         } catch (error) {
             console.log(error.message);
             showErrorAlert(error.response.data.message);
         }
-
-    }, [api, fetchData, userData])
+    }, [editID, fetchData, userData]);
 
 
     useEffect(() => {
-        fetchData();
-    }, [fetchData])
+        fetchData()
+        usersData()
+    }, [fetchData, usersData]);
 
-
-    const AddForm = (() => {
-        setEditID('')
-        setshowModal(true)
+    const AddForm = () => {
+        setEditID('');
+        setShowModal(true);
         setUserData({
             u_title: '',
             u_firstname: '',
@@ -185,17 +206,25 @@ export default function datatable() {
             u_share: '',
             u_status: '',
             u_admin: userId
-
         });
-    })
-
+    };
 
     return (
         <>
             <div className='col-md-12 text-end mb-3'>
-                <button type="button" className="btn btn-primary " onClick={() => { AddForm(); }}>
+                <button type="button" className="btn btn-primary" onClick={AddForm}>
                     เพิ่ม
                 </button>
+                <hr />
+            </div>
+            <div className="col-md-4">
+                <Select
+                    instanceId="user-select"
+                    value={users.find(option => option.value === u_number)}
+                    options={users}
+                    onChange={ChangeUsers}
+                    required
+                />
                 <hr />
             </div>
             <div className="col-md-12">
@@ -204,7 +233,6 @@ export default function datatable() {
                         <h3>ข้อมูลสมาชิก</h3>
                         <strong className='text-danger'>*** กรณีต้องการให้มีข้อมูลสามาชิกแต่ไม่มีหุ้น สามารถเพิ่มรายชื่อได้ แต่เลขหุ้นให้กรอกเป็น 0 หุ้น</strong>
                         <DataTable
-
                             columns={columns}
                             data={data}
                             pagination
@@ -212,11 +240,8 @@ export default function datatable() {
                     </div>
                 </div>
             </div>
-
-
             <Modal editID={editID} handleInputChange={handleInputChange} handleSubmit={handleSubmit}
-                userData={userData} showModal={showModal} hideModal={() => setshowModal(false)} />
+                userData={userData} showModal={showModal} hideModal={() => setShowModal(false)} />
         </>
-
-    )
+    );
 }

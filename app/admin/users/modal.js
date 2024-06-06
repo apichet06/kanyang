@@ -70,9 +70,6 @@ export default function Modal(props) {
         handleInputChange({ target: { name: 'districts_id', value: selectdistrict } });
     }
 
-
-
-
     const fetchDistrictData = useCallback(async () => {
 
         try {
@@ -136,7 +133,6 @@ export default function Modal(props) {
                                     </select>
                                 </div>
                                 <div className="col-md-5">
-
                                     <label className="col-form-label">ชื่อ</label>
                                     <input type="text" className="form-control" name="u_firstname" value={userData.u_firstname} onChange={handleInputChange} required />
                                 </div>
@@ -151,6 +147,7 @@ export default function Modal(props) {
                                 <div className='col-md-4'>
                                     <label className="col-form-label">จังหวัด</label>
                                     <Select
+                                        instanceId="user-select"
                                         value={provinces.find((option) => option.value === userData.provinces_id)}
                                         onChange={handleDistrictChanges}
                                         options={provinces}

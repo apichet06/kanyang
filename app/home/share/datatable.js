@@ -74,7 +74,7 @@ export default function Datatable() {
                     <input className="form-control" list="percentYear" placeholder="ค้นหาปีปันผล..." onChange={e => setYear(e.target.value)} />
                     <datalist id="percentYear">
                         {percentYears.map(p => (
-                            <option value={p.s_year}></option>
+                            <option key={p.s_year} value={p.s_year}></option>
                         ))}
                     </datalist>
                 </div>

@@ -49,7 +49,7 @@ export default function Home() {
         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-5 col-xl-3">
           <main className="form-signin text-center" >
             <form onSubmit={formAction}>
-              <img className="mb-4" src="./logo_rubber.png" alt width={132} height={127} />
+              <img className="mb-4" src="./logo_rubber.png" alt='' width={132} height={127} />
               <h1 className="h3 mb-3 fw-normal">กรุณาเข้าสู่ระบบ</h1>
               <div className="form-floating mb-2">
                 <input type="text" className="form-control" name='u_number' autoComplete="off" placeholder="รหัสสมาชิก" onChange={(e) => setUnumber(e.target.value)} />

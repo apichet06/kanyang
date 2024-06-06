@@ -69,12 +69,12 @@ export default function datatable() {
             const newData = await response.data.data.map((item, index) => ({
                 ...item, autoID: index + 1
             }))
-            // .filter(item => {
-            //     const itemDate = new Date(item.r_rubber_date);
-            //     const itemYear = itemDate.getFullYear();
-            //     const itemMonth = itemDate.getMonth() + 1;
-            //     return itemYear === currentYear && itemMonth === currentMonth;
-            // })
+                .filter(item => {
+                    const itemDate = new Date(item.r_rubber_date);
+                    const itemYear = itemDate.getFullYear();
+                    const itemMonth = itemDate.getMonth() + 1;
+                    return itemYear === currentYear && itemMonth === currentMonth;
+                })
             setData(newData);
             setPending(false);
         } else {
@@ -103,8 +103,8 @@ export default function datatable() {
                     const itemMonth = itemDate.getMonth() + 1;
                     return itemYear === currentYear && itemMonth === currentMonth;
                 })
-                setSearchrubber(response.data.data)
-                // setSearchrubber(newData)
+                // setSearchrubber(response.data.data)
+                setSearchrubber(newData)
             }
 
         } catch (error) {
@@ -258,6 +258,7 @@ export default function datatable() {
                                 <label className="col-sm-3 col-form-label">ชื่อสมาชิก</label>
                                 <div className="col-sm-6">
                                     <Select
+                                        instanceId="instanceId"
                                         value={users.find((option) => option.value === u_number)}
                                         options={users}
                                         onChange={ChangeUsers}
@@ -296,7 +297,7 @@ export default function datatable() {
                         <input className="form-control" list="user" placeholder="ค้นหาชื่อสมาชิก" onChange={e => setUfirstname(e.target.value)} />
                         <datalist id="user">
                             {searchuser.map(user => (
-                                <option value={user.u_firstname}></option>
+                                <option key={user.u_number} value={user.u_firstname}></option>
                             ))}
                         </datalist>
                     </div>

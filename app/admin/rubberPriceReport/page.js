@@ -155,6 +155,7 @@ export default function page() {
                     </div>
                     <div className="col-md-4 mt-5">
                         <Select
+                            instanceId="user-select"
                             value={users.find(option => option.value === u_number)}
                             options={users}
                             onChange={ChangeUsers}

@@ -70,7 +70,7 @@ export default function Datatable() {
             });
 
             const response = await axios.get(api + "/sharepercent/UdateshareYear", {
-                onDownloadProgress: (progressEvent) => { }
+                // onDownloadProgress: (progressEvent) => { }
             });
             if (response.status === 200) {
                 Swal.close(); // ปิด SweetAlert เมื่อได้รับการตอบกลับที่มีสถานะเป็น 200
@@ -151,7 +151,7 @@ export default function Datatable() {
                         <input className="form-control" list="percentYear" placeholder="ค้นหาปีปันผล..." onChange={e => setYear(e.target.value)} />
                         <datalist id="percentYear">
                             {percentYears.map(p => (
-                                <option value={p.s_year}></option>
+                                <option key={p.s_year} value={p.s_year}></option>
                             ))}
                         </datalist>
                     </div>
@@ -159,9 +159,8 @@ export default function Datatable() {
                         <input className="form-control" list="user" id="u_number" placeholder="ค้นหาชื่อสมาชิก" onChange={e => setUfirstname(e.target.value)} />
                         <datalist id="user">
                             {users.map(user => (
-                                <option value={user.u_firstname}></option>
+                                <option key={user.u_number} value={user.u_firstname}></option>
                             ))}
-
                         </datalist>
                     </div>
                     <div className='col-md-10 mt-5'>

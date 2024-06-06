@@ -28,7 +28,7 @@ export default function datatable() {
                     &nbsp;
                     <button onClick={() => handleDelete(row.r_number)} className="btn btn-danger btn-sm">ลบ</button>
                 </>
-            ), center: true
+            ), center: 'true'
         },
     ];
 

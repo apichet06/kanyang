@@ -114,7 +114,7 @@ export default function page() {
                         <input className="form-control" list="user" placeholder="ค้นหาชื่อสมาชิก" onChange={e => setUfirstname(e.target.value)} />
                         <datalist id="user">
                             {users.map(user => (
-                                <option value={user.u_firstname}></option>
+                                <option key={user.u_number} value={user.u_firstname}></option>
                             ))}
 
                         </datalist>
