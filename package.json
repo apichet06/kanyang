@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@zeit/next-css": "^1.0.1",
-    "admin-lte": "^3.2.0",
+    "admin-lte": "^4.0.0-beta1",
     "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.2",
@@ -19,7 +19,6 @@
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "next": "14.1.4",
-    "node-sass": "^9.0.0",
     "react": "^18",
     "react-chartjs-2": "^5.2.0",
     "react-data-table-component": "^7.6.2",
@@ -27,8 +26,9 @@
     "react-router-dom": "^6.23.0",
     "react-select": "^5.8.0",
     "react-to-print": "^2.15.1",
+    "sass": "^1.77.8",
     "styled-components": "^6.1.8",
-    "sweetalert2": "^11.10.8"
+    "sweetalert2": "^11.6.13"
   },
   "devDependencies": {
     "@types/node": "20.12.7",

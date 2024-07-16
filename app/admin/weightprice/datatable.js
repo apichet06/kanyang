@@ -69,12 +69,12 @@ export default function datatable() {
             const newData = await response.data.data.map((item, index) => ({
                 ...item, autoID: index + 1
             }))
-                .filter(item => {
-                    const itemDate = new Date(item.r_rubber_date);
-                    const itemYear = itemDate.getFullYear();
-                    const itemMonth = itemDate.getMonth() + 1;
-                    return itemYear === currentYear && itemMonth === currentMonth;
-                })
+            // .filter(item => {
+            //     const itemDate = new Date(item.r_rubber_date);
+            //     const itemYear = itemDate.getFullYear();
+            //     const itemMonth = itemDate.getMonth() + 1;
+            //     return itemYear === currentYear && itemMonth === currentMonth;
+            // })
             setData(newData);
             setPending(false);
         } else {
@@ -103,8 +103,8 @@ export default function datatable() {
                     const itemMonth = itemDate.getMonth() + 1;
                     return itemYear === currentYear && itemMonth === currentMonth;
                 })
-                // setSearchrubber(response.data.data)
-                setSearchrubber(newData)
+                setSearchrubber(response.data.data)
+                // setSearchrubber(newData)
             }
 
         } catch (error) {
